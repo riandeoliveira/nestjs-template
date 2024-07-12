@@ -1,0 +1,121 @@
+{
+  //
+  // Code Spell Checker
+  //
+  "cSpell.language": "en,pt",
+  //
+  // Diff Editor
+  //
+  "diffEditor.ignoreTrimWhitespace": true,
+  //
+  // Editor
+  //
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "comments": true,
+    "other": true,
+    "strings": true
+  },
+  //
+  // ESLint
+  //
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+  ],
+  //
+  // Files
+  //
+  "files.autoGuessEncoding": true,
+  "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "**/.git": false
+  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": false,
+  //
+  // Git
+  //
+  "git.allowNoVerifyCommit": false,
+  "git.confirmEmptyCommits": false,
+  "git.enableSmartCommit": true,
+  "git.showPushSuccessNotification": true,
+  "git.supportCancellation": true,
+  //
+  // JavaScript
+  //
+  "javascript.suggest.completeFunctionCalls": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  //
+  // Languages
+  //
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  //
+  // Terminal
+  //
+  "terminal.integrated.copyOnSelection": true,
+  //
+  // TODO Highlight
+  //
+  "todohighlight.keywords": [
+    {
+      "backgroundColor": "#FF6D00",
+      "borderRadius": "4px",
+      "color": "#fff",
+      "text": "BUG:",
+    },
+    {
+      "backgroundColor": "#00C853",
+      "borderRadius": "4px",
+      "color": "#fff",
+      "text": "FEAT:",
+    },
+    {
+      "borderRadius": "4px",
+      "text": "FIXME:",
+    },
+    {
+      "backgroundColor": "#D50000",
+      "borderRadius": "4px",
+      "color": "#fff",
+      "text": "HOTFIX:",
+    },
+    {
+      "backgroundColor": "#2962FF",
+      "borderRadius": "4px",
+      "color": "#fff",
+      "text": "NOTE:",
+    },
+    {
+      "backgroundColor": "#00BFA5",
+      "borderRadius": "4px",
+      "color": "#fff",
+      "text": "REFACT:",
+    },
+    {
+      "borderRadius": "4px",
+      "text": "TODO:",
+    },
+  ],
+  //
+  // TypeScript
+  //
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+}

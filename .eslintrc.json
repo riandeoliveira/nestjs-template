@@ -1,0 +1,63 @@
+{
+  "env": {
+    "jest": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "ignorePatterns": [
+    "build",
+    "coverage",
+    "dist",
+    "node_modules",
+    "scripts"
+  ],
+  "noInlineConfig": true,
+  "root": true,
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-require-imports": "error",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/prefer-for-of": "error",
+    "eqeqeq": "error",
+    "indent": [
+      "error",
+      2
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "max-classes-per-file": "error",
+    "max-lines": [
+      "error",
+      1000
+    ],
+    "max-params": [
+      "warn",
+      3
+    ],
+    "no-alert": "warn",
+    "no-console": "warn",
+    "no-debugger": "warn",
+    "no-empty": "warn",
+    "no-multiple-empty-lines": "warn",
+    "no-undef": "warn",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-template": "error",
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ]
+  }
+}
