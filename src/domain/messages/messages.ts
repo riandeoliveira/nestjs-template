@@ -50,4 +50,6 @@ export const MESSAGES = {
 
   UNAUTHORIZED_OPERATION: "You do not have permission to perform this action.",
   USER_NOT_FOUND: "No 'user' found.",
+
+  REQUEST_IS_EMPTY: "At least one field must be provided."
 };
