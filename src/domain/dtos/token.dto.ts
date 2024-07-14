@@ -1,4 +1,4 @@
-import { ObjectId } from "typeorm";
+import { UserDto } from "./user.dto";
 
 interface ExpirableTokenDto {
   value: string;
@@ -6,7 +6,12 @@ interface ExpirableTokenDto {
 }
 
 export interface TokenDto {
-  userId: ObjectId;
+  userId: string;
   accessToken: ExpirableTokenDto;
   refreshToken: ExpirableTokenDto;
+}
+
+export interface TokenPayloadDto extends UserDto {
+  iat: number;
+  exp: number;
 }
