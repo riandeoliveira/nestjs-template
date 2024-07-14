@@ -1,4 +1,4 @@
-import { TokenPayloadDto } from "@/domain/dtos/token.dto";
+import { UserDto } from "@/domain/dtos/user.dto";
 import { MESSAGES } from "@/domain/messages/messages";
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -13,10 +13,10 @@ export class AuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request);
 
-    if (!token) throw new UnauthorizedException();
+    if (!token) throw new UnauthorizedException(MESSAGES.UNAUTHORIZED_OPERATION);
 
     try {
-      const payload: TokenPayloadDto = await this.jwtService.verifyAsync(token, {
+      const payload: UserDto = await this.jwtService.verifyAsync(token, {
         secret: "secret",
       });
 
