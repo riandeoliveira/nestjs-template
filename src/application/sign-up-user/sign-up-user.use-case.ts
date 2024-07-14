@@ -1,12 +1,10 @@
-import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { MESSAGES } from "@/domain/messages/messages";
 import { AuthService } from "@/infrastructure/modules/auth/auth.service";
+import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { PasswordUtility } from "@/infrastructure/utilities/password.utility";
 import { ConflictException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { SignUpUserRequest } from "./sign-up-user.request";
 import { SignUpUserResponse } from "./sign-up-user.response";
 
@@ -14,17 +12,15 @@ import { SignUpUserResponse } from "./sign-up-user.response";
 export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUserResponse> {
   public constructor(
     private readonly authService: AuthService,
-
-    @InjectRepository(User)
-    private readonly repository: Repository<User>,
+    private readonly repository: UserRepository,
   ) {}
 
   public async execute(request: SignUpUserRequest): Promise<SignUpUserResponse> {
-    const userAlreadyExists: boolean = !!(await this.repository.findOne({
+    const userAlreadyExists: boolean = await this.repository.exists({
       where: {
         email: request.email,
       },
-    }));
+    });
 
     if (userAlreadyExists) throw new ConflictException(MESSAGES.EMAIL.ALREADY_EXISTS);
 
@@ -37,14 +33,8 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
 
     await this.repository.save(user);
 
-    const tokenData: TokenDto = await this.authService.generateTokenData(user);
+    const { id, email } = user;
 
-    const { userId, accessToken, refreshToken } = tokenData;
-
-    return {
-      userId,
-      accessToken,
-      refreshToken,
-    };
+    return await this.authService.generateTokenData({ id, email });
   }
 }
