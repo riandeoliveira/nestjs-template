@@ -1,4 +1,5 @@
 import { MESSAGES } from "@/domain/messages/messages";
+import { Trim } from "@/infrastructure/decorators/trim.decorator";
 import { faker } from "@faker-js/faker";
 import { ApiProperty } from "@nestjs/swagger";
 import {
@@ -21,6 +22,7 @@ export class UpdateUserRequest {
   @IsString({ message: MESSAGES.EMAIL.IS_STRING })
   @MaxLength(64, { message: MESSAGES.EMAIL.HAS_MAXIMUM_LENGTH })
   @MinLength(8, { message: MESSAGES.EMAIL.HAS_MINIMUM_LENGTH })
+  @Trim()
   public readonly email?: string;
 
   @ApiProperty({
@@ -32,5 +34,6 @@ export class UpdateUserRequest {
   @IsStrongPassword({}, { message: MESSAGES.PASSWORD.IS_STRONG })
   @MaxLength(64, { message: MESSAGES.PASSWORD.HAS_MAXIMUM_LENGTH })
   @MinLength(8, { message: MESSAGES.PASSWORD.HAS_MINIMUM_LENGTH })
+  @Trim()
   public readonly password?: string;
 }
