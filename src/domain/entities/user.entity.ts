@@ -5,7 +5,7 @@ import { BaseEntity } from "./base.entity";
 export class User extends BaseEntity {
   @Column({
     name: "email",
-    type: "string",
+    type: "text",
     unique: true,
   })
   @Index()
@@ -13,7 +13,7 @@ export class User extends BaseEntity {
 
   @Column({
     name: "password",
-    type: "string",
+    type: "text",
   })
   public password: string;
 }

@@ -1,32 +1,26 @@
-import {
-  CreateDateColumn,
-  DeleteDateColumn,
-  ObjectId,
-  ObjectIdColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, PrimaryGeneratedColumn } from "typeorm";
 
 export abstract class BaseEntity {
-  @ObjectIdColumn({ name: "id" })
-  public id: ObjectId;
+  @PrimaryGeneratedColumn("uuid")
+  public id: string;
 
-  @CreateDateColumn({
+  @Column({
     name: "created_at",
-    type: "timestamp without time zone",
+    type: "datetime",
   })
-  public createdAt: Date;
+  public createdAt: Date = new Date();
 
-  @UpdateDateColumn({
+  @Column({
     name: "updated_at",
     nullable: true,
-    type: "timestamp without time zone",
+    type: "datetime",
   })
-  public updatedAt?: Date;
+  public updatedAt: Date | null = null;
 
-  @DeleteDateColumn({
+  @Column({
     name: "deleted_at",
     nullable: true,
-    type: "timestamp without time zone",
+    type: "datetime",
   })
-  public deletedAt?: Date;
+  public deletedAt: Date | null = null;
 }
