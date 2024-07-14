@@ -1,6 +1,8 @@
+import { ProblemDetailsDto } from "@/domain/dtos/problem-details.dto";
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
+import { ApiResponse } from "@/infrastructure/decorators/api-response.decorator";
 import { AuthGuard } from "@/infrastructure/modules/auth/auth.guard";
-import { Body, Put, UseGuards } from "@nestjs/common";
+import { Body, HttpCode, HttpStatus, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { UpdateUserRequest } from "./update-user.request";
 import { UpdateUserUseCase } from "./update-user.use-case";
@@ -15,6 +17,11 @@ export class UpdateUserEndpoint {
     operationId: "",
     tags: ["User"],
   })
+  @ApiResponse("NO_CONTENT")
+  @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
+  @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
+  @ApiResponse("CONFLICT", ProblemDetailsDto)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Put()
   @UseGuards(AuthGuard)
   public async handle(@Body() request: UpdateUserRequest): Promise<void> {

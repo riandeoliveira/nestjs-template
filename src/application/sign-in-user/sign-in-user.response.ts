@@ -1,3 +1,3 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
 
-export interface SignInUserResponse extends TokenDto {}
+export abstract class SignInUserResponse extends TokenDto {}

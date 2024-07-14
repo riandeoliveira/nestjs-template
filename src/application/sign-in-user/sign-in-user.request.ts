@@ -11,7 +11,7 @@ import {
   MinLength,
 } from "class-validator";
 
-export class SignInUserRequest {
+export abstract class SignInUserRequest {
   @ApiProperty({
     example: faker.internet.email(),
   })

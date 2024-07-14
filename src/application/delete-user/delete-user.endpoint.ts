@@ -1,6 +1,8 @@
+import { ProblemDetailsDto } from "@/domain/dtos/problem-details.dto";
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
+import { ApiResponse } from "@/infrastructure/decorators/api-response.decorator";
 import { AuthGuard } from "@/infrastructure/modules/auth/auth.guard";
-import { Delete, UseGuards } from "@nestjs/common";
+import { Delete, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { DeleteUserUseCase } from "./delete-user.use-case";
 
@@ -14,7 +16,11 @@ export class DeleteUserEndpoint {
     operationId: "",
     tags: ["User"],
   })
+  @ApiResponse("NO_CONTENT")
+  @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
+  @ApiResponse("NOT_FOUND", ProblemDetailsDto)
   @Delete()
+  @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard)
   public async handle(): Promise<void> {
     await this.useCase.execute();

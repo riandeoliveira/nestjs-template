@@ -1,5 +1,3 @@
-// NOTE: to implement
-
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";

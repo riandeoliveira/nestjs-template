@@ -10,7 +10,7 @@ import { Not } from "typeorm";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()
-export class UpdateUserUseCase implements IUseCase<UpdateUserRequest, void> {
+export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
   public constructor(
     private readonly authService: AuthService,
     private readonly repository: UserRepository,

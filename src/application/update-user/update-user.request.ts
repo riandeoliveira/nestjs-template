@@ -12,7 +12,7 @@ import {
   ValidateIf,
 } from "class-validator";
 
-export class UpdateUserRequest {
+export abstract class UpdateUserRequest {
   @ApiProperty({
     example: faker.internet.email(),
   })
