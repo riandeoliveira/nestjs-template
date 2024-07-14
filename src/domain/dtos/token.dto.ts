@@ -1,17 +1,21 @@
-import { UserDto } from "./user.dto";
+import { faker } from "@faker-js/faker";
+import { ApiProperty } from "@nestjs/swagger";
+import { ExpirableTokenDto } from "./expirable-token.dto";
 
-interface ExpirableTokenDto {
-  value: string;
-  expiresIn: number;
-}
+export abstract class TokenDto {
+  @ApiProperty({
+    name: "user_id",
+    example: faker.string.uuid(),
+  })
+  public readonly userId: string;
 
-export interface TokenDto {
-  userId: string;
-  accessToken: ExpirableTokenDto;
-  refreshToken: ExpirableTokenDto;
-}
+  @ApiProperty({
+    name: "access_token",
+  })
+  public readonly accessToken: ExpirableTokenDto;
 
-export interface TokenPayloadDto extends UserDto {
-  iat: number;
-  exp: number;
+  @ApiProperty({
+    name: "refresh_token",
+  })
+  public readonly refreshToken: ExpirableTokenDto;
 }
