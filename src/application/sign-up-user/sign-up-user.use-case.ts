@@ -1,9 +1,9 @@
 import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { MESSAGES } from "@/domain/messages/messages";
-import { AuthService } from "@/infrastructure/modules/auth/auth.service";
+import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
-import { PasswordUtility } from "@/infrastructure/utilities/password.utility";
+import { AuthService } from "@/infrastructure/services/auth.service";
 import { ConflictException, Injectable } from "@nestjs/common";
 import { SignUpUserRequest } from "./sign-up-user.request";
 import { SignUpUserResponse } from "./sign-up-user.response";

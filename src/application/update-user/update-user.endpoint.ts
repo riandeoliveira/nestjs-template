@@ -1,7 +1,7 @@
 import { ProblemDetailsDto } from "@/domain/dtos/problem-details.dto";
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
 import { ApiResponse } from "@/infrastructure/decorators/api-response.decorator";
-import { AuthGuard } from "@/infrastructure/modules/auth/auth.guard";
+import { AuthGuard } from "@/infrastructure/guards/auth.guard";
 import { Body, HttpCode, HttpStatus, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { UpdateUserRequest } from "./update-user.request";

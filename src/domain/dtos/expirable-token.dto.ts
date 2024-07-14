@@ -1,4 +1,4 @@
-import { JwtUtility } from "@/infrastructure/utilities/jwt.utility";
+import { JwtUtility } from "@/domain/utilities/jwt.utility";
 import { faker } from "@faker-js/faker";
 import { ApiProperty } from "@nestjs/swagger";
 

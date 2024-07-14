@@ -1,8 +1,8 @@
 import { UserDto } from "@/domain/dtos/user.dto";
 import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { AuthService } from "@/infrastructure/modules/auth/auth.service";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
+import { AuthService } from "@/infrastructure/services/auth.service";
 import { Injectable } from "@nestjs/common";
 import { IsNull } from "typeorm";
 
