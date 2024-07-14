@@ -1,18 +1,15 @@
 import { HttpStatus, INestApplication } from "@nestjs/common";
+import _ from "lodash";
 import { HttpExceptionFilter } from "nest-problem-details-filter";
 
 export abstract class ProblemDetailsExtension {
   public static configureWith(application: INestApplication): void {
-    const httpStatus = Object.values(HttpStatus)
-      .filter((value) => typeof value === "number")
-      .reduce(
-        (accumulator, value: any) => {
-          accumulator[value] = value.toString();
-
-          return accumulator;
-        },
-        {} as { [key: number]: string },
-      );
+    const httpStatus = _.chain(HttpStatus)
+      .values()
+      .filter(_.isNumber)
+      .keyBy(_.identity)
+      .mapValues(_.toString)
+      .value();
 
     application.useGlobalFilters(new HttpExceptionFilter("https://httpstatuses.com", httpStatus));
   }

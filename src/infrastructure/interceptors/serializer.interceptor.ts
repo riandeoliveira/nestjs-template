@@ -1,6 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
-import { isObject, snakeCase, transform } from "lodash";
-import { ObjectId } from "mongodb";
+import _ from "lodash";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -13,11 +12,9 @@ export class SerializerInterceptor implements NestInterceptor {
   private convertToSnakeCase(value: any): any {
     if (Array.isArray(value)) return value.map((v) => this.convertToSnakeCase(v));
 
-    if (isObject(value)) {
-      if (value instanceof ObjectId) return value.toHexString();
-
-      return transform(value, (result, val, key) => {
-        result[snakeCase(key)] = this.convertToSnakeCase(val);
+    if (_.isObject(value)) {
+      return _.transform(value, (result, val, key) => {
+        result[_.snakeCase(key)] = this.convertToSnakeCase(val);
       });
     }
 
