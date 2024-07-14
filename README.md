@@ -34,8 +34,8 @@ The application is available online and can be accessed [here](https://www.examp
   <img src="https://skillicons.dev/icons?i=nestjs" width="48" title="NestJS" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=nodejs" width="48" title="Node.js" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=pnpm" width="48" title="PNPM" /> &nbsp;&nbsp;
-  <img src="https://skillicons.dev/icons?i=mongodb" width="48" title="MongoDB" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=redis" width="48" title="Redis" /> &nbsp;&nbsp;
+  <img src="https://skillicons.dev/icons?i=sqlite" width="48" title="SQLite" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=typescript" width="48" title="TypeScript" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=vercel" width="48" title="Vercel" /> &nbsp;&nbsp;
 </div>
