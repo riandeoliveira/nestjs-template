@@ -17,6 +17,7 @@
   "noInlineConfig": true,
   "root": true,
   "rules": {
+    "@typescript-eslint/ban-types": "warn",
     "@typescript-eslint/explicit-function-return-type": "warn",
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/no-explicit-any": "warn",
