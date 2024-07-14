@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "../app.module";
+import { AppModule } from "../../app.module";
 import { DocumentationExtension } from "../extensions/documentation.extension";
 import { ProblemDetailsExtension } from "../extensions/problem-details.extension";
 import { ValidationExtension } from "../extensions/validation.extension";
