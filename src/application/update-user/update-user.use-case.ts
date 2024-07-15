@@ -1,7 +1,7 @@
 import { UserDto } from "@/domain/dtos/user.dto";
 import { User } from "@/domain/entities/user.entity";
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { MESSAGES } from "@/domain/messages/messages";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
@@ -19,7 +19,7 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
   public async execute(request: UpdateUserRequest): Promise<void> {
     const isRequestEmpty: boolean = !request.email && !request.password;
 
-    if (isRequestEmpty) throw new BadRequestException(MESSAGES.REQUEST_IS_EMPTY);
+    if (isRequestEmpty) throw new BadRequestException(ResponseMessages.REQUEST_IS_EMPTY);
 
     const currentUser: UserDto = this.authService.getCurrentUser();
 
@@ -40,7 +40,7 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
         },
       });
 
-      if (userAlreadyExists) throw new ConflictException(MESSAGES.EMAIL.ALREADY_EXISTS);
+      if (userAlreadyExists) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
 
       user.email = request.email;
     }

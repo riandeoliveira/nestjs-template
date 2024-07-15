@@ -1,6 +1,6 @@
 import { User } from "@/domain/entities/user.entity";
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { MESSAGES } from "@/domain/messages/messages";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
@@ -22,7 +22,7 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
       },
     });
 
-    if (userAlreadyExists) throw new ConflictException(MESSAGES.EMAIL.ALREADY_EXISTS);
+    if (userAlreadyExists) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
 
     const hashedPassword: string = await PasswordUtility.hash(request.password);
 

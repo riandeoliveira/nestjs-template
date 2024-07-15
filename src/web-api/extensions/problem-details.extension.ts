@@ -1,4 +1,4 @@
-import { PROBLEM_DETAILS_URI } from "@/domain/contants";
+import { PROBLEM_DETAILS_URI } from "@/domain/constants";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import { HttpExceptionFilter } from "nest-problem-details-filter";

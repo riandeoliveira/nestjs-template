@@ -1,3 +1,5 @@
+export type HttpMessagesKey = keyof typeof HttpMessages;
+
 export enum HttpMessages {
   ACCEPTED = "Accepted",
   AMBIGUOUS = "Ambiguous",

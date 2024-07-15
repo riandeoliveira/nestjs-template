@@ -1,6 +1,6 @@
 import { BaseEntity } from "@/domain/entities/base.entity";
+import { ResponseMessages, ResponseMessagesKey } from "@/domain/enums/response-messages.enum";
 import { IRepository } from "@/domain/interfaces/repository.interface";
-import { MESSAGES } from "@/domain/messages/messages";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { DeepPartial, EntityManager, FindOneOptions } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
@@ -30,11 +30,11 @@ export abstract class BaseRepository<TEntity extends BaseEntity> implements IRep
 
   public async findOneOrThrow(
     options: FindOneOptions<TEntity>,
-    throwMessage?: keyof typeof MESSAGES,
+    throwMessage: ResponseMessagesKey = "ENTITY_NOT_FOUND",
   ): Promise<TEntity> {
     const entity: TEntity | null = await this.findOne(options);
 
-    if (!entity) throw new NotFoundException(MESSAGES[throwMessage ?? "ENTITY_NOT_FOUND"]);
+    if (!entity) throw new NotFoundException(ResponseMessages[throwMessage]);
 
     return entity;
   }

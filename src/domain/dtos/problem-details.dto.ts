@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { PROBLEM_DETAILS_URI } from "../contants";
-import { HttpMessages } from "../enums/http-messages";
+import { PROBLEM_DETAILS_URI } from "../constants";
+import { HttpMessages } from "../enums/http-messages.enum";
 
 export class ProblemDetailsDto {
   @ApiProperty({

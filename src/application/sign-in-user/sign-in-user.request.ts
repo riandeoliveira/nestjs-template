@@ -1,4 +1,4 @@
-import { MESSAGES } from "@/domain/messages/messages";
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { Trim } from "@/infrastructure/decorators/trim.decorator";
 import { faker } from "@faker-js/faker";
 import { ApiProperty } from "@nestjs/swagger";
@@ -15,22 +15,22 @@ export abstract class SignInUserRequest {
   @ApiProperty({
     example: faker.internet.email(),
   })
-  @IsEmail({}, { message: MESSAGES.EMAIL.IS_VALID })
-  @IsNotEmpty({ message: MESSAGES.EMAIL.IS_REQUIRED })
-  @IsString({ message: MESSAGES.EMAIL.IS_STRING })
-  @MaxLength(64, { message: MESSAGES.EMAIL.HAS_MAXIMUM_LENGTH })
-  @MinLength(8, { message: MESSAGES.EMAIL.HAS_MINIMUM_LENGTH })
+  @IsEmail({}, { message: ResponseMessages.EMAIL_IS_VALID })
+  @IsNotEmpty({ message: ResponseMessages.EMAIL_IS_REQUIRED })
+  @IsString({ message: ResponseMessages.EMAIL_IS_STRING })
+  @MaxLength(64, { message: ResponseMessages.EMAIL_HAS_MAXIMUM_LENGTH })
+  @MinLength(8, { message: ResponseMessages.EMAIL_HAS_MINIMUM_LENGTH })
   @Trim()
   public readonly email: string;
 
   @ApiProperty({
     example: faker.internet.password({ prefix: "$0" }),
   })
-  @IsNotEmpty({ message: MESSAGES.PASSWORD.IS_REQUIRED })
-  @IsString({ message: MESSAGES.PASSWORD.IS_STRING })
-  @IsStrongPassword({}, { message: MESSAGES.PASSWORD.IS_STRONG })
-  @MaxLength(64, { message: MESSAGES.PASSWORD.HAS_MAXIMUM_LENGTH })
-  @MinLength(8, { message: MESSAGES.PASSWORD.HAS_MINIMUM_LENGTH })
+  @IsNotEmpty({ message: ResponseMessages.PASSWORD_IS_REQUIRED })
+  @IsString({ message: ResponseMessages.PASSWORD_IS_STRING })
+  @IsStrongPassword({}, { message: ResponseMessages.PASSWORD_IS_STRONG })
+  @MaxLength(64, { message: ResponseMessages.PASSWORD_HAS_MAXIMUM_LENGTH })
+  @MinLength(8, { message: ResponseMessages.PASSWORD_HAS_MINIMUM_LENGTH })
   @Trim()
   public readonly password: string;
 }

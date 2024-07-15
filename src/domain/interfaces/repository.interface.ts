@@ -1,6 +1,6 @@
 import { DeepPartial, FindOneOptions } from "typeorm";
 import { BaseEntity } from "../entities/base.entity";
-import { MESSAGES } from "../messages/messages";
+import { ResponseMessagesKey } from "../enums/response-messages.enum";
 
 export interface IRepository<TEntity extends BaseEntity> {
   create(entity: DeepPartial<TEntity>): TEntity;
@@ -13,7 +13,7 @@ export interface IRepository<TEntity extends BaseEntity> {
 
   findOneOrThrow(
     options: FindOneOptions<TEntity>,
-    throwMessage?: keyof typeof MESSAGES,
+    throwMessage: ResponseMessagesKey,
   ): Promise<TEntity>;
 
   save(entity: TEntity): Promise<void>;

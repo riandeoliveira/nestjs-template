@@ -1,7 +1,7 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { MESSAGES } from "@/domain/messages/messages";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
@@ -25,11 +25,13 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       },
     });
 
-    if (!user) throw new UnauthorizedException(MESSAGES.INVALID_LOGIN_CREDENTIALS);
+    if (!user) throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
 
     const isPasswordValid: boolean = await PasswordUtility.verify(request.password, user.password);
 
-    if (!isPasswordValid) throw new UnauthorizedException(MESSAGES.INVALID_LOGIN_CREDENTIALS);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
+    }
 
     const { id, email } = user;
 
