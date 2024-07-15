@@ -24,5 +24,7 @@ export enum ResponseMessages {
   TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
 
   UNAUTHORIZED_OPERATION = "You do not have permission to perform this action.",
+  UNKNOWN_ERROR = "An unknown error has occurred. Please try again later.",
+
   USER_NOT_FOUND = "User not found.",
 }
