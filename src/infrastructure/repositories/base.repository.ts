@@ -1,4 +1,4 @@
-import { BaseEntity } from "@/domain/entities/base.entity";
+import { BaseEntity } from "@/domain/entities/base/base.entity";
 import { ResponseMessages, ResponseMessagesKey } from "@/domain/enums/response-messages.enum";
 import { IRepository } from "@/domain/interfaces/repository.interface";
 import { Injectable, NotFoundException } from "@nestjs/common";

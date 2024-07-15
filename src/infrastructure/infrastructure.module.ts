@@ -1,9 +1,9 @@
 import { DomainModule } from "@/domain/domain.module";
-import { User } from "@/domain/entities/user.entity";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import path from "path";
 import { UserRepository } from "./repositories/user.repository";
 import { AuthService } from "./services/auth.service";
 
@@ -15,14 +15,13 @@ import { AuthService } from "./services/auth.service";
     }),
     JwtModule.register({
       global: true,
-      secret: "secret",
+      secret: process.env.JWT_SECRET,
     }),
-    TypeOrmModule.forFeature([User]),
     TypeOrmModule.forRoot({
       type: "sqlite",
       database: process.env.DATABASE_SOURCE,
       synchronize: process.env.NODE_ENV === "development",
-      entities: [User],
+      entities: [path.join(__dirname, "/../domain/entities/**.entity{.ts,.js}")],
     }),
   ],
   providers: [AuthService, UserRepository],

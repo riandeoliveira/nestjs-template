@@ -1,5 +1,5 @@
 import { DeepPartial, FindOneOptions } from "typeorm";
-import { BaseEntity } from "../entities/base.entity";
+import { BaseEntity } from "../entities/base/base.entity";
 import { ResponseMessagesKey } from "../enums/response-messages.enum";
 
 export interface IRepository<TEntity extends BaseEntity> {
