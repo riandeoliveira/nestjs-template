@@ -19,18 +19,27 @@ export class AuthService {
   }
 
   public async generateTokenData(payload: UserDto): Promise<TokenDto> {
-    const accessToken: string = await this.jwtService.signAsync(payload, { expiresIn: "1d" });
-    const refreshToken: string = await this.jwtService.signAsync(payload, { expiresIn: "7d" });
+    const expirationInSeconds = {
+      accessToken: 20,
+      refreshToken: 40,
+    };
+
+    const accessToken: string = await this.jwtService.signAsync(payload, {
+      expiresIn: expirationInSeconds.accessToken,
+    });
+    const refreshToken: string = await this.jwtService.signAsync(payload, {
+      expiresIn: expirationInSeconds.refreshToken,
+    });
 
     return {
       userId: payload.id,
       accessToken: {
         value: accessToken,
-        expiresIn: 86400000,
+        expiresIn: expirationInSeconds.accessToken,
       },
       refreshToken: {
         value: refreshToken,
-        expiresIn: 604800000,
+        expiresIn: expirationInSeconds.refreshToken,
       },
     };
   }
