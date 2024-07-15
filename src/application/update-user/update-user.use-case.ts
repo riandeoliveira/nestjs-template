@@ -23,11 +23,14 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const currentUser: UserDto = this.authService.getCurrentUser();
 
-    const user: User = await this.repository.findOneOrThrow({
-      where: {
-        id: currentUser.id,
+    const user: User = await this.repository.findOneOrThrow(
+      {
+        where: {
+          id: currentUser.id,
+        },
       },
-    });
+      "USER_NOT_FOUND",
+    );
 
     if (request.email) {
       const userAlreadyExists: boolean = await this.repository.exists({

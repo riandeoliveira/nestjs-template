@@ -16,12 +16,15 @@ export class DeleteUserUseCase implements IUseCase {
   public async execute(): Promise<void> {
     const currentUser: UserDto = this.authService.getCurrentUser();
 
-    const user: User = await this.repository.findOneOrThrow({
-      where: {
-        id: currentUser.id,
-        deletedAt: IsNull(),
+    const user: User = await this.repository.findOneOrThrow(
+      {
+        where: {
+          id: currentUser.id,
+          deletedAt: IsNull(),
+        },
       },
-    });
+      "USER_NOT_FOUND",
+    );
 
     await this.repository.softDelete(user);
   }
