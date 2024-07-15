@@ -21,6 +21,7 @@ export class UpdateUserEndpoint {
   @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
   @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
   @ApiResponse("CONFLICT", ProblemDetailsDto)
+  @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put()
   @UseGuards(AuthGuard)

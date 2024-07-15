@@ -19,6 +19,7 @@ export class SignUpUserEndpoint {
   @ApiResponse("CREATED", SignUpUserResponse)
   @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
   @ApiResponse("CONFLICT", ProblemDetailsDto)
+  @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
   @HttpCode(HttpStatus.CREATED)
   @Post("sign-up")
   public async handle(@Body() request: SignUpUserRequest): Promise<SignUpUserResponse> {

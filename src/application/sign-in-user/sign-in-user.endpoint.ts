@@ -19,6 +19,7 @@ export class SignInUserEndpoint {
   @ApiResponse("OK", SignInUserResponse)
   @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
   @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
+  @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
   @HttpCode(HttpStatus.OK)
   @Post("sign-in")
   public async handle(@Body() request: SignInUserRequest): Promise<SignInUserResponse> {

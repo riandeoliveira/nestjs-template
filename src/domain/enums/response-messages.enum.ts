@@ -21,6 +21,8 @@ export enum ResponseMessages {
 
   REQUEST_IS_EMPTY = "At least one field must be provided.",
 
+  TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
+
   UNAUTHORIZED_OPERATION = "You do not have permission to perform this action.",
   USER_NOT_FOUND = "User not found.",
 }
