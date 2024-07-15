@@ -1,12 +1,12 @@
-import { User } from "@/domain/entities/user.entity";
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { IsNull } from "typeorm";
 
 @Injectable()
-export class DeleteUserUseCase implements IUseCase {
+export class VerifyCurrentUserUseCase implements IUseCase {
   public constructor(
     private readonly authService: AuthService,
     private readonly repository: UserRepository,
@@ -15,16 +15,13 @@ export class DeleteUserUseCase implements IUseCase {
   public async execute(): Promise<void> {
     const id: string = this.authService.getCurrentUserId();
 
-    const user: User = await this.repository.findOneOrThrow(
-      {
-        where: {
-          id,
-          deletedAt: IsNull(),
-        },
+    const userExists: boolean = await this.repository.exists({
+      where: {
+        id,
+        deletedAt: IsNull(),
       },
-      "USER_NOT_FOUND",
-    );
+    });
 
-    await this.repository.softDelete(user);
+    if (!userExists) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
   }
 }

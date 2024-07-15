@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { PROBLEM_DETAILS_URI } from "../constants";
 import { HttpMessages } from "../enums/http-messages.enum";
 
-export class ProblemDetailsDto {
+export abstract class ProblemDetailsDto {
   @ApiProperty({
     name: "type",
     example: `${PROBLEM_DETAILS_URI}/${HttpStatus.BAD_REQUEST}`,

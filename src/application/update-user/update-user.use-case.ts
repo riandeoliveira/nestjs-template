@@ -1,4 +1,3 @@
-import { UserDto } from "@/domain/dtos/user.dto";
 import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
@@ -21,12 +20,12 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     if (isRequestEmpty) throw new BadRequestException(ResponseMessages.REQUEST_IS_EMPTY);
 
-    const currentUser: UserDto = this.authService.getCurrentUser();
+    const id: string = this.authService.getCurrentUserId();
 
     const user: User = await this.repository.findOneOrThrow(
       {
         where: {
-          id: currentUser.id,
+          id,
           deletedAt: IsNull(),
         },
       },
@@ -36,7 +35,7 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
     if (request.email) {
       const userAlreadyExists: boolean = await this.repository.exists({
         where: {
-          id: Not(currentUser.id),
+          id: Not(id),
           email: request.email,
         },
       });

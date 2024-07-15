@@ -33,12 +33,7 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
     }
 
-    const { id, email } = user;
-
-    const tokenData: TokenDto = await this.authService.generateTokenData({
-      id,
-      email,
-    });
+    const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
 
     return tokenData;
   }

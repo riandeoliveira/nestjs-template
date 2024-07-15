@@ -1,4 +1,3 @@
-import { UserDto } from "@/domain/dtos/user.dto";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -16,13 +15,11 @@ export class AuthGuard implements CanActivate {
     if (!token) throw new UnauthorizedException(ResponseMessages.UNAUTHORIZED_OPERATION);
 
     try {
-      const payload: UserDto = await this.jwtService.verifyAsync(token, {
+      const payload: { userId: string } = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
 
-      const { id, email } = payload;
-
-      request.user = { id, email };
+      request.currentUserId = payload.userId;
     } catch {
       throw new UnauthorizedException(ResponseMessages.UNAUTHORIZED_OPERATION);
     }

@@ -20,6 +20,7 @@ export class DeleteUserEndpoint {
   @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
   @ApiResponse("NOT_FOUND", ProblemDetailsDto)
   @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
+  @ApiResponse("INTERNAL_SERVER_ERROR", ProblemDetailsDto)
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard)

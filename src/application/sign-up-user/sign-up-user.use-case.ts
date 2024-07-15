@@ -33,8 +33,6 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
 
     await this.repository.save(user);
 
-    const { id, email } = user;
-
-    return await this.authService.generateTokenData({ id, email });
+    return await this.authService.generateTokenData(user.id);
   }
 }

@@ -1,5 +1,4 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
-import { UserDto } from "@/domain/dtos/user.dto";
 import { IRequest } from "@/domain/interfaces/request.interface";
 import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
@@ -14,15 +13,17 @@ export class AuthService {
     private readonly request: IRequest,
   ) {}
 
-  public getCurrentUser(): UserDto {
-    return this.request.user;
+  public getCurrentUserId(): string {
+    return this.request.currentUserId;
   }
 
-  public async generateTokenData(payload: UserDto): Promise<TokenDto> {
+  public async generateTokenData(userId: string): Promise<TokenDto> {
     const expirationInSeconds = {
-      accessToken: 20,
-      refreshToken: 40,
+      accessToken: 3600, // 1 hour
+      refreshToken: 604800, // 7 days
     };
+
+    const payload = { userId };
 
     const accessToken: string = await this.jwtService.signAsync(payload, {
       expiresIn: expirationInSeconds.accessToken,
@@ -32,7 +33,7 @@ export class AuthService {
     });
 
     return {
-      userId: payload.id,
+      userId,
       accessToken: {
         value: accessToken,
         expiresIn: expirationInSeconds.accessToken,
