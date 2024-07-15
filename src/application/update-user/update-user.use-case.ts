@@ -6,7 +6,7 @@ import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
 import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
-import { Not } from "typeorm";
+import { IsNull, Not } from "typeorm";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()
@@ -27,6 +27,7 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
       {
         where: {
           id: currentUser.id,
+          deletedAt: IsNull(),
         },
       },
       "USER_NOT_FOUND",
