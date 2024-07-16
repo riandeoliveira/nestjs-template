@@ -1,7 +1,7 @@
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
+import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
 import { Trim } from "@/infrastructure/decorators/trim.decorator";
 import { faker } from "@faker-js/faker";
-import { ApiProperty } from "@nestjs/swagger";
 import {
   IsEmail,
   IsNotEmpty,
@@ -12,9 +12,7 @@ import {
 } from "class-validator";
 
 export abstract class SignUpUserRequest {
-  @ApiProperty({
-    example: faker.internet.email(),
-  })
+  @ApiProperty("email", faker.internet.email())
   @IsEmail({}, { message: ResponseMessages.EMAIL_IS_VALID })
   @IsNotEmpty({ message: ResponseMessages.EMAIL_IS_REQUIRED })
   @IsString({ message: ResponseMessages.EMAIL_IS_STRING })
@@ -23,9 +21,7 @@ export abstract class SignUpUserRequest {
   @Trim()
   public readonly email: string;
 
-  @ApiProperty({
-    example: faker.internet.password({ prefix: "$0" }),
-  })
+  @ApiProperty("password", faker.internet.password({ prefix: "$0" }))
   @IsNotEmpty({ message: ResponseMessages.PASSWORD_IS_REQUIRED })
   @IsString({ message: ResponseMessages.PASSWORD_IS_STRING })
   @IsStrongPassword({}, { message: ResponseMessages.PASSWORD_IS_STRONG })

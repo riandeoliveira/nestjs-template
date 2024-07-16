@@ -1,8 +1,8 @@
-import { ProblemDetailsDto } from "@/domain/dtos/problem-details.dto";
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
-import { ApiResponse } from "@/infrastructure/decorators/api-response.decorator";
+import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses";
+import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
 import { AuthGuard } from "@/infrastructure/guards/auth.guard";
-import { Body, HttpCode, HttpStatus, Put, UseGuards } from "@nestjs/common";
+import { Body, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { UpdateUserRequest } from "./update-user.request";
 import { UpdateUserUseCase } from "./update-user.use-case";
@@ -17,13 +17,14 @@ export class UpdateUserEndpoint {
     operationId: "",
     tags: ["User"],
   })
-  @ApiResponse("NO_CONTENT")
-  @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
-  @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
-  @ApiResponse("CONFLICT", ProblemDetailsDto)
-  @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
-  @ApiResponse("INTERNAL_SERVER_ERROR", ProblemDetailsDto)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiErrorResponses([
+    "BAD_REQUEST",
+    "UNAUTHORIZED",
+    "CONFLICT",
+    "TOO_MANY_REQUESTS",
+    "INTERNAL_SERVER_ERROR",
+  ])
+  @ApiSuccessResponse("NO_CONTENT")
   @Put()
   @UseGuards(AuthGuard)
   public async handle(@Body() request: UpdateUserRequest): Promise<void> {

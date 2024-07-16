@@ -1,8 +1,8 @@
-import { ProblemDetailsDto } from "@/domain/dtos/problem-details.dto";
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
-import { ApiResponse } from "@/infrastructure/decorators/api-response.decorator";
+import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses";
+import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
 import { AuthGuard } from "@/infrastructure/guards/auth.guard";
-import { Body, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import { Body, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
 import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
@@ -18,13 +18,14 @@ export class RenewUserRefreshTokenEndpoint {
     operationId: "",
     tags: ["User"],
   })
-  @ApiResponse("OK", RenewUserRefreshTokenResponse)
-  @ApiResponse("BAD_REQUEST", ProblemDetailsDto)
-  @ApiResponse("UNAUTHORIZED", ProblemDetailsDto)
-  @ApiResponse("NOT_FOUND", ProblemDetailsDto)
-  @ApiResponse("TOO_MANY_REQUESTS", ProblemDetailsDto)
-  @ApiResponse("INTERNAL_SERVER_ERROR", ProblemDetailsDto)
-  @HttpCode(HttpStatus.OK)
+  @ApiErrorResponses([
+    "BAD_REQUEST",
+    "UNAUTHORIZED",
+    "NOT_FOUND",
+    "TOO_MANY_REQUESTS",
+    "INTERNAL_SERVER_ERROR",
+  ])
+  @ApiSuccessResponse("OK", RenewUserRefreshTokenResponse)
   @Post("refresh-token/renew")
   @UseGuards(AuthGuard)
   public async handle(

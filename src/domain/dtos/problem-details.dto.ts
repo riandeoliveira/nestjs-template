@@ -1,31 +1,19 @@
 import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
-import { ApiProperty } from "@nestjs/swagger";
 import { PROBLEM_DETAILS_URI } from "../constants";
 import { HttpMessages } from "../enums/http-messages.enum";
+import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
 
 export abstract class ProblemDetailsDto {
-  @ApiProperty({
-    name: "type",
-    example: `${PROBLEM_DETAILS_URI}/${HttpStatus.BAD_REQUEST}`,
-  })
+  @ApiProperty("type", `${PROBLEM_DETAILS_URI}/${HttpStatus.BAD_REQUEST}`)
   public readonly type: string;
 
-  @ApiProperty({
-    name: "title",
-    example: faker.lorem.sentence(),
-  })
+  @ApiProperty("title", faker.lorem.sentence())
   public readonly title: string;
 
-  @ApiProperty({
-    name: "status",
-    example: HttpStatus.BAD_REQUEST,
-  })
+  @ApiProperty("status", HttpStatus.BAD_REQUEST)
   public readonly status: number;
 
-  @ApiProperty({
-    name: "detail",
-    example: HttpMessages.BAD_REQUEST,
-  })
+  @ApiProperty("detail", HttpMessages.BAD_REQUEST)
   public readonly detail?: string;
 }
