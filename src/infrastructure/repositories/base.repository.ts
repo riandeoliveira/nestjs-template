@@ -24,6 +24,17 @@ export abstract class BaseRepository<TEntity extends BaseEntity> implements IRep
     return await this.repository.exists(this.entity, options);
   }
 
+  public async existsOrThrow(
+    options: FindOneOptions<TEntity>,
+    throwMessage: ResponseMessagesKey = "ENTITY_NOT_FOUND",
+  ): Promise<boolean> {
+    const entityExists: boolean = await this.repository.exists(this.entity, options);
+
+    if (!entityExists) throw new NotFoundException(ResponseMessages[throwMessage]);
+
+    return entityExists;
+  }
+
   public async findOne(options: FindOneOptions<TEntity>): Promise<TEntity | null> {
     return await this.repository.findOne(this.entity, options);
   }
