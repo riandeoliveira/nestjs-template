@@ -10,7 +10,7 @@ export class SerializerInterceptor implements NestInterceptor {
   }
 
   private convertToSnakeCase(value: any): any {
-    if (Array.isArray(value)) return value.map((v) => this.convertToSnakeCase(v));
+    if (_.isArray(value)) return value.map((v) => this.convertToSnakeCase(v));
 
     if (_.isObject(value)) {
       return _.transform(value, (result, val, key) => {
