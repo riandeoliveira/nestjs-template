@@ -8,10 +8,7 @@ export abstract class JwtUtility {
     };
 
     const payload = {
-      sub: faker.number.int(10),
-      name: faker.person.firstName(),
-      email: faker.internet.email(),
-      role: "user",
+      userId: faker.string.uuid(),
     };
 
     const encodedHeader: string = Buffer.from(JSON.stringify(header)).toString("base64");

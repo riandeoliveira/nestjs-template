@@ -9,6 +9,11 @@ export interface IRepository<TEntity extends BaseEntity> {
 
   exists(options: FindOneOptions<TEntity>): Promise<boolean>;
 
+  existsOrThrow(
+    options: FindOneOptions<TEntity>,
+    throwMessage: ResponseMessagesKey,
+  ): Promise<boolean>;
+
   findOne(options: FindOneOptions<TEntity>): Promise<TEntity>;
 
   findOneOrThrow(
