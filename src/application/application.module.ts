@@ -2,6 +2,8 @@ import { InfrastructureModule } from "@/infrastructure/infrastructure.module";
 import { Module } from "@nestjs/common";
 import { DeleteUserEndpoint } from "./delete-user/delete-user.endpoint";
 import { DeleteUserUseCase } from "./delete-user/delete-user.use-case";
+import { RenewUserRefreshTokenEndpoint } from "./renew-user-refresh-token/renew-user-refresh-token.endpoint";
+import { RenewUserRefreshTokenUseCase } from "./renew-user-refresh-token/renew-user-refresh-token.use-case";
 import { SignInUserEndpoint } from "./sign-in-user/sign-in-user.endpoint";
 import { SignInUserUseCase } from "./sign-in-user/sign-in-user.use-case";
 import { SignUpUserEndpoint } from "./sign-up-user/sign-up-user.endpoint";
@@ -15,6 +17,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
   imports: [InfrastructureModule],
   controllers: [
     DeleteUserEndpoint,
+    RenewUserRefreshTokenEndpoint,
     SignInUserEndpoint,
     SignUpUserEndpoint,
     UpdateUserEndpoint,
@@ -22,6 +25,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
   ],
   providers: [
     DeleteUserUseCase,
+    RenewUserRefreshTokenUseCase,
     SignInUserUseCase,
     SignUpUserUseCase,
     UpdateUserUseCase,

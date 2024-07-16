@@ -1,4 +1,3 @@
-import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
@@ -33,8 +32,6 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
     }
 
-    const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
-
-    return tokenData;
+    return await this.authService.generateTokenData(user.id);
   }
 }
