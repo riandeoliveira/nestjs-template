@@ -1,14 +1,13 @@
-import { HttpStatus, INestApplication } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
 import request, { Response } from "supertest";
+import { application } from "../../main.e2e-spec";
 
-export class SignUpUserUtility {
-  public constructor(private readonly application: INestApplication) {}
-
-  public async expectValidationFailure(
+export abstract class SignUpUserUtility {
+  public static async expectValidationFailure(
     message: string,
     { email = "", password = "" },
   ): Promise<void> {
-    const response: Response = await request(this.application.getHttpServer())
+    const response: Response = await request(application.getHttpServer())
       .post("/user/sign-up")
       .send({
         email,
