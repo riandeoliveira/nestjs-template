@@ -97,6 +97,9 @@ devDependencies:
   jest:
     specifier: ^29.7.0
     version: 29.7.0(@types/node@20.14.10)(ts-node@10.9.2)
+  jest-each:
+    specifier: ^29.7.0
+    version: 29.7.0
   prettier:
     specifier: ^3.3.2
     version: 3.3.2
