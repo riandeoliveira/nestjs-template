@@ -6,21 +6,21 @@ export abstract class BaseEntity {
 
   @Column({
     name: "created_at",
-    type: "datetime",
+    type: "date",
   })
   public createdAt: Date = new Date();
 
   @Column({
     name: "updated_at",
     nullable: true,
-    type: "datetime",
+    type: "date",
   })
   public updatedAt: Date | null = null;
 
   @Column({
     name: "deleted_at",
     nullable: true,
-    type: "datetime",
+    type: "date",
   })
   public deletedAt: Date | null = null;
 }

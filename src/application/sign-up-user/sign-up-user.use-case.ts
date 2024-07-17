@@ -1,7 +1,9 @@
+import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
+import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
 import { ConflictException, Injectable } from "@nestjs/common";
@@ -12,6 +14,7 @@ import { SignUpUserResponse } from "./sign-up-user.response";
 export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUserResponse> {
   public constructor(
     private readonly authService: AuthService,
+    private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
     private readonly repository: UserRepository,
   ) {}
 
@@ -33,6 +36,18 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
 
     await this.repository.save(user);
 
-    return await this.authService.generateTokenData(user.id);
+    const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
+
+    const { value, expiresIn } = tokenData.refreshToken;
+
+    const personalRefreshToken = this.personalRefreshTokenRepository.create({
+      value,
+      expiresIn,
+      user,
+    });
+
+    await this.personalRefreshTokenRepository.save(personalRefreshToken);
+
+    return tokenData;
   }
 }

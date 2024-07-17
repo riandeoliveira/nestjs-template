@@ -6,13 +6,17 @@ import { DeepPartial, EntityManager, FindOneOptions } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Injectable()
-export abstract class BaseRepository<TEntity extends BaseEntity> implements IRepository<TEntity> {
+export abstract class BaseRepository<
+  TEntity extends BaseEntity,
+  TEntityDto extends DeepPartial<TEntity>,
+> implements IRepository<TEntity>
+{
   public constructor(
     protected readonly entity: { new (): TEntity },
     protected readonly repository: EntityManager,
   ) {}
 
-  public create(entity: DeepPartial<TEntity>): TEntity {
+  public create(entity: TEntityDto): TEntity {
     return this.repository.create(this.entity, entity);
   }
 

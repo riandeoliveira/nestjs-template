@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
+import { PersonalRefreshTokenRepository } from "./repositories/personal-refresh-token.repository";
 import { UserRepository } from "./repositories/user.repository";
 import { AuthService } from "./services/auth.service";
 
@@ -24,7 +25,7 @@ import { AuthService } from "./services/auth.service";
       entities: [path.join(__dirname, "/../domain/entities/**.entity{.ts,.js}")],
     }),
   ],
-  providers: [AuthService, UserRepository],
-  exports: [AuthService, UserRepository],
+  providers: [AuthService, UserRepository, PersonalRefreshTokenRepository],
+  exports: [AuthService, UserRepository, PersonalRefreshTokenRepository],
 })
 export class InfrastructureModule {}
