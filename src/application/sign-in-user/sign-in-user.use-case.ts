@@ -45,7 +45,7 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       },
       data: {
         hasBeenUsed: true,
-        deletedAt: new Date(),
+        updatedAt: new Date(),
       },
     });
 

@@ -83,7 +83,7 @@ export class RenewUserRefreshTokenUseCase
       },
       data: {
         hasBeenUsed: true,
-        deletedAt: new Date(),
+        updatedAt: new Date(),
       },
     });
   }
