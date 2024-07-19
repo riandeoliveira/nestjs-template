@@ -1,9 +1,15 @@
+import { TokenDto } from "@/domain/dtos/token.dto";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { AuthService } from "@/infrastructure/services/auth.service";
 import { PrismaService } from "@/infrastructure/services/prisma.service";
-import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()
@@ -20,12 +26,14 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const id: string = this.authService.getCurrentUserId();
 
-    const user = await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
         deletedAt: null,
       },
     });
+
+    if (!user) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
 
     if (request.email) {
       const existingUser = await this.prisma.user.findFirst({
@@ -39,29 +47,55 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
       if (existingUser) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
 
-      await this.prisma.user.update({
-        where: {
-          ...existingUser,
-        },
-        data: {
-          email: request.email,
-          deletedAt: new Date(),
-        },
-      });
+      user.email = request.email;
     }
 
     if (request.password) {
       const hashedPassword: string = await PasswordUtility.hash(request.password);
 
-      await this.prisma.user.update({
-        where: {
-          ...user,
-        },
-        data: {
-          password: hashedPassword,
-          deletedAt: new Date(),
-        },
-      });
+      user.password = hashedPassword;
     }
+
+    user.updatedAt = new Date();
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+        deletedAt: null,
+      },
+      data: {
+        ...user,
+      },
+    });
+
+    const personalRefreshToken = await this.prisma.personalRefreshToken.findFirst({
+      where: {
+        userId: user.id,
+        hasBeenUsed: false,
+        deletedAt: null,
+      },
+    });
+
+    await this.prisma.personalRefreshToken.update({
+      where: {
+        ...personalRefreshToken,
+      },
+      data: {
+        hasBeenUsed: true,
+        updatedAt: new Date(),
+      },
+    });
+
+    const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
+
+    const { value, expiresIn } = tokenData.refreshToken;
+
+    await this.prisma.personalRefreshToken.create({
+      data: {
+        value,
+        expiresIn,
+        userId: user.id,
+      },
+    });
   }
 }

@@ -23,7 +23,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
     SignInUserEndpoint,
     // SignOutUserEndpoint,
     SignUpUserEndpoint,
-    // UpdateUserEndpoint,
+    UpdateUserEndpoint,
     VerifyCurrentUserEndpoint,
   ],
   providers: [
@@ -32,7 +32,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
     SignInUserUseCase,
     // SignOutUserUseCase,
     SignUpUserUseCase,
-    // UpdateUserUseCase,
+    UpdateUserUseCase,
     VerifyCurrentUserUseCase,
   ],
 })
