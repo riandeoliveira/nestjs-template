@@ -1,12 +1,10 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
-import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
-import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
+import { PrismaService } from "@/infrastructure/services/prisma.service";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { IsNull } from "typeorm";
+import { PersonalRefreshToken, User } from "@prisma/client";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
 import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
 
@@ -16,8 +14,7 @@ export class RenewUserRefreshTokenUseCase
 {
   public constructor(
     private readonly authService: AuthService,
-    private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
-    private readonly repository: UserRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   public async execute(
@@ -25,22 +22,50 @@ export class RenewUserRefreshTokenUseCase
   ): Promise<RenewUserRefreshTokenResponse> {
     await this.authService.validateTokenOrThrow(request.refreshToken);
 
-    const id: string = this.authService.getCurrentUserId();
-
-    const user: User = await this.repository.findOneOrThrow(
-      {
-        where: {
-          id,
-          deletedAt: IsNull(),
-        },
-      },
-      "USER_NOT_FOUND",
+    const user = await this.findAuthenticatedUser();
+    const personalRefreshToken = await this.findUnusedPersonalRefreshTokenByValue(
+      request.refreshToken,
     );
 
-    const personalRefreshToken = await this.personalRefreshTokenRepository.findOne({
+    await this.updatePersonalRefreshToken(personalRefreshToken);
+
+    return await this.generateTokenDataByUserId(user.id);
+  }
+
+  private async generateTokenDataByUserId(userId: string): Promise<TokenDto> {
+    const tokenData: TokenDto = await this.authService.generateTokenData(userId);
+
+    const { value, expiresIn } = tokenData.refreshToken;
+
+    await this.prisma.personalRefreshToken.create({
+      data: {
+        value,
+        expiresIn,
+        userId,
+      },
+    });
+
+    return tokenData;
+  }
+
+  private async findAuthenticatedUser(): Promise<User> {
+    const id: string = this.authService.getCurrentUserId();
+
+    return await this.prisma.user.findUniqueOrThrow({
       where: {
-        value: request.refreshToken,
-        deletedAt: IsNull(),
+        id,
+        deletedAt: null,
+      },
+    });
+  }
+
+  private async findUnusedPersonalRefreshTokenByValue(
+    value: string,
+  ): Promise<PersonalRefreshToken> {
+    const personalRefreshToken = await this.prisma.personalRefreshToken.findUniqueOrThrow({
+      where: {
+        value,
+        deletedAt: null,
       },
     });
 
@@ -48,23 +73,18 @@ export class RenewUserRefreshTokenUseCase
       throw new UnauthorizedException(ResponseMessages.UNAUTHORIZED_OPERATION);
     }
 
-    personalRefreshToken.hasBeenUsed = true;
+    return personalRefreshToken;
+  }
 
-    await this.personalRefreshTokenRepository.update(personalRefreshToken);
-    await this.personalRefreshTokenRepository.save(personalRefreshToken);
-
-    const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
-
-    const { value, expiresIn } = tokenData.refreshToken;
-
-    const newPersonalRefreshToken = this.personalRefreshTokenRepository.create({
-      value,
-      expiresIn,
-      user,
+  private async updatePersonalRefreshToken(token: PersonalRefreshToken): Promise<void> {
+    await this.prisma.personalRefreshToken.update({
+      where: {
+        ...token,
+      },
+      data: {
+        hasBeenUsed: true,
+        deletedAt: new Date(),
+      },
     });
-
-    await this.personalRefreshTokenRepository.save(newPersonalRefreshToken);
-
-    return tokenData;
   }
 }

@@ -1,18 +1,16 @@
-import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
-import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
+import { PrismaService } from "@/infrastructure/services/prisma.service";
 import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
-import { IsNull, Not } from "typeorm";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()
 export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
   public constructor(
     private readonly authService: AuthService,
-    private readonly repository: UserRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   public async execute(request: UpdateUserRequest): Promise<void> {
@@ -22,36 +20,48 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const id: string = this.authService.getCurrentUserId();
 
-    const user: User = await this.repository.findOneOrThrow(
-      {
-        where: {
-          id,
-          deletedAt: IsNull(),
-        },
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id,
+        deletedAt: null,
       },
-      "USER_NOT_FOUND",
-    );
+    });
 
     if (request.email) {
-      const userAlreadyExists: boolean = await this.repository.exists({
+      const existingUser = await this.prisma.user.findFirst({
         where: {
-          id: Not(id),
+          id: {
+            not: id,
+          },
           email: request.email,
         },
       });
 
-      if (userAlreadyExists) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
+      if (existingUser) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
 
-      user.email = request.email;
+      await this.prisma.user.update({
+        where: {
+          ...existingUser,
+        },
+        data: {
+          email: request.email,
+          deletedAt: new Date(),
+        },
+      });
     }
 
     if (request.password) {
       const hashedPassword: string = await PasswordUtility.hash(request.password);
 
-      user.password = hashedPassword;
+      await this.prisma.user.update({
+        where: {
+          ...user,
+        },
+        data: {
+          password: hashedPassword,
+          deletedAt: new Date(),
+        },
+      });
     }
-
-    await this.repository.update(user);
-    await this.repository.save(user);
   }
 }
