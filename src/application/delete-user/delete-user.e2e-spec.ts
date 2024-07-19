@@ -29,9 +29,17 @@ describe("Delete User | E2E Tests", () => {
         },
       });
 
+      const personalRefreshTokenList = await prisma.personalRefreshToken.findMany({
+        where: {
+          value: signUpUserBody.refreshToken.value,
+          deletedAt: null,
+        },
+      });
+
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
 
       expect(user).toEqual(null);
+      expect(personalRefreshTokenList).toEqual([]);
     });
 
     it("Should throw an error when receiving too many requests", async () => {

@@ -31,5 +31,14 @@ export class DeleteUserUseCase implements IUseCase {
         deletedAt: new Date(),
       },
     });
+
+    await this.prisma.personalRefreshToken.updateMany({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
   }
 }
