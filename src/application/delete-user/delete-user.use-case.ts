@@ -1,8 +1,8 @@
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { AuthService } from "@/infrastructure/services/auth.service";
 import { PrismaService } from "@/infrastructure/services/prisma.service";
-import { Injectable } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class DeleteUserUseCase implements IUseCase {
@@ -12,23 +12,17 @@ export class DeleteUserUseCase implements IUseCase {
   ) {}
 
   public async execute(): Promise<void> {
-    const user = await this.findAuthenticatedUser();
-
-    await this.updateUser(user);
-  }
-
-  private async findAuthenticatedUser(): Promise<User> {
     const id: string = this.authService.getCurrentUserId();
 
-    return await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
         deletedAt: null,
       },
     });
-  }
 
-  private async updateUser(user: User): Promise<void> {
+    if (!user) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
+
     await this.prisma.user.update({
       where: {
         ...user,
