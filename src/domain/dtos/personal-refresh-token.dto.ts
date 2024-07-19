@@ -1,7 +1,7 @@
 import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
 import { faker } from "@faker-js/faker";
+import { User } from "@prisma/client";
 import { JwtUtility } from "../utilities/jwt.utility";
-import { User } from "../entities/user.entity";
 
 export abstract class PersonalRefreshTokenDto {
   @ApiProperty("value", JwtUtility.generateFakeAccessToken())

@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
+import { isUUID } from "class-validator";
 import each from "jest-each";
 import { Response } from "supertest";
 import {
@@ -12,7 +13,6 @@ import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { StringUtility } from "../../domain/utilities/string.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { signUpUserFixture } from "./sign-up-user.fixture";
 
@@ -75,7 +75,7 @@ describe("Sign Up User | E2E Tests", () => {
 
       expect(response.statusCode).toEqual(HttpStatus.CREATED);
 
-      expect(StringUtility.isUUID(body.userId)).toEqual(true);
+      expect(isUUID(body.userId)).toEqual(true);
       expect(user).not.toBeNull();
 
       expect(body.accessToken.expiresIn).toEqual(ACCESS_TOKEN_EXPIRATION_IN_SECONDS);
@@ -119,7 +119,7 @@ describe("Sign Up User | E2E Tests", () => {
       const status: number = HttpStatus.BAD_REQUEST;
       const body = response.body as ProblemDetailsDto;
 
-      expect(response.status).toEqual(status);
+      expect(response.statusCode).toEqual(status);
 
       expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
       expect(body.title).toContain(message);
