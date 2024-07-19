@@ -20,7 +20,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
   controllers: [
     // DeleteUserEndpoint,
     // RenewUserRefreshTokenEndpoint,
-    // SignInUserEndpoint,
+    SignInUserEndpoint,
     // SignOutUserEndpoint,
     SignUpUserEndpoint,
     // UpdateUserEndpoint,
@@ -29,7 +29,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
   providers: [
     // DeleteUserUseCase,
     // RenewUserRefreshTokenUseCase,
-    // SignInUserUseCase,
+    SignInUserUseCase,
     // SignOutUserUseCase,
     SignUpUserUseCase,
     // UpdateUserUseCase,
