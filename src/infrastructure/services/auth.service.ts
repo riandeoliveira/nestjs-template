@@ -1,3 +1,7 @@
+import {
+  ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
+  REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
+} from "@/domain/constants";
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { IAuthService } from "@/domain/interfaces/auth-service.interface";
 import { IRequest } from "@/domain/interfaces/request.interface";
@@ -15,29 +19,24 @@ export class AuthService implements IAuthService {
   ) {}
 
   public async generateTokenData(userId: string): Promise<TokenDto> {
-    const expirationInSeconds = {
-      accessToken: 3600, // 1 hour
-      refreshToken: 604800, // 7 days
-    };
-
     const payload = { userId };
 
     const accessToken: string = await this.jwtService.signAsync(payload, {
-      expiresIn: expirationInSeconds.accessToken,
+      expiresIn: ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
     });
     const refreshToken: string = await this.jwtService.signAsync(payload, {
-      expiresIn: expirationInSeconds.refreshToken,
+      expiresIn: REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
     });
 
     return {
       userId,
       accessToken: {
         value: accessToken,
-        expiresIn: expirationInSeconds.accessToken,
+        expiresIn: ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
       },
       refreshToken: {
         value: refreshToken,
-        expiresIn: expirationInSeconds.refreshToken,
+        expiresIn: REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
       },
     };
   }
@@ -46,9 +45,11 @@ export class AuthService implements IAuthService {
     return this.request.currentUserId;
   }
 
-  public async validateTokenOrThrow(token: string): Promise<void> {
+  public async validateTokenOrThrow(token: string): Promise<boolean> {
     await this.jwtService.verifyAsync(token, {
       secret: process.env.JWT_SECRET,
     });
+
+    return true;
   }
 }

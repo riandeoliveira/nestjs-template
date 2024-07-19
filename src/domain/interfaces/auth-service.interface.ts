@@ -5,5 +5,5 @@ export interface IAuthService {
 
   getCurrentUserId(): string;
 
-  validateTokenOrThrow(token: string): Promise<void>;
+  validateTokenOrThrow(token: string): Promise<boolean>;
 }
