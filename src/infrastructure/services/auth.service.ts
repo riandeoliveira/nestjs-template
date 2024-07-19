@@ -8,6 +8,7 @@ import { IRequest } from "@/domain/interfaces/request.interface";
 import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { randomUUID } from "crypto";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService implements IAuthService {
@@ -19,7 +20,10 @@ export class AuthService implements IAuthService {
   ) {}
 
   public async generateTokenData(userId: string): Promise<TokenDto> {
-    const payload = { userId };
+    const payload = {
+      userId,
+      jti: randomUUID(),
+    };
 
     const accessToken: string = await this.jwtService.signAsync(payload, {
       expiresIn: ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
