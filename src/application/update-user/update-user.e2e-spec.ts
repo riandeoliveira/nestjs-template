@@ -7,6 +7,7 @@ import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { TestUtility } from "../../domain/utilities/test.utility";
 import { prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
@@ -35,14 +36,7 @@ describe("Update User | E2E Tests", () => {
   });
 
   it("Should throw an error when the authenticated user is not found", async () => {
-    const signUpUserResponse: Response = await request.post("/user/sign-up").send({
-      email: faker.internet.email(),
-      password: faker.internet.password({ prefix: "$0" }),
-    });
-
-    const signUpUserBody: TokenDto = signUpUserResponse.body;
-
-    const accessToken: string = `Bearer ${signUpUserBody.accessToken.value}`;
+    const { accessToken } = await TestUtility.authenticate();
 
     await request.delete("/user").set("Authorization", accessToken);
 
@@ -83,14 +77,7 @@ describe("Update User | E2E Tests", () => {
       password: faker.internet.password({ prefix: "$0" }),
     });
 
-    const secondUserResponse: Response = await request.post("/user/sign-up").send({
-      email: faker.internet.email(),
-      password: faker.internet.password({ prefix: "$0" }),
-    });
-
-    const secondUserBody: TokenDto = secondUserResponse.body;
-
-    const accessToken: string = `Bearer ${secondUserBody.accessToken.value}`;
+    const { accessToken } = await TestUtility.authenticate();
 
     const response: Response = await request.put("/user").set("Authorization", accessToken).send({
       email: firstUserEmail,
@@ -108,17 +95,7 @@ describe("Update User | E2E Tests", () => {
   });
 
   it("Should update a user", async () => {
-    const email: string = faker.internet.email();
-    const password: string = faker.internet.password({ prefix: "$0" });
-
-    const signUpUserResponse: Response = await request.post("/user/sign-up").send({
-      email,
-      password,
-    });
-
-    const signUpUserBody: TokenDto = signUpUserResponse.body;
-
-    const accessToken: string = `Bearer ${signUpUserBody.accessToken.value}`;
+    const { accessToken, signUpUserBody, email, password } = await TestUtility.authenticate();
 
     const response: Response = await request
       .put("/user")

@@ -1,11 +1,10 @@
-import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
 import { Response } from "supertest";
 import { MAXIMUM_REQUESTS_ALLOWED_PER_TTL, PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
-import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { TestUtility } from "../../domain/utilities/test.utility";
 import { request } from "../../main.e2e-spec";
 
 describe("Verify Current User | E2E Tests", () => {
@@ -32,14 +31,7 @@ describe("Verify Current User | E2E Tests", () => {
     });
 
     it("Should throw an error when the authenticated user is not found", async () => {
-      const signUpUserResponse: Response = await request.post("/user/sign-up").send({
-        email: faker.internet.email(),
-        password: faker.internet.password({ prefix: "$0" }),
-      });
-
-      const signUpUserBody: TokenDto = signUpUserResponse.body;
-
-      const accessToken: string = `Bearer ${signUpUserBody.accessToken.value}`;
+      const { accessToken } = await TestUtility.authenticate();
 
       await request.delete("/user").set("Authorization", accessToken);
 
@@ -73,14 +65,7 @@ describe("Verify Current User | E2E Tests", () => {
     });
 
     it("Should verify the authenticated user", async () => {
-      const signUpUserResponse: Response = await request.post("/user/sign-up").send({
-        email: faker.internet.email(),
-        password: faker.internet.password({ prefix: "$0" }),
-      });
-
-      const signUpUserBody: TokenDto = signUpUserResponse.body;
-
-      const accessToken: string = `Bearer ${signUpUserBody.accessToken.value}`;
+      const { accessToken } = await TestUtility.authenticate();
 
       const response: Response = await request
         .get("/user/verify")
