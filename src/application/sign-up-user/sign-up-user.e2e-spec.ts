@@ -117,7 +117,7 @@ describe("Sign Up User | E2E Tests", () => {
         .retry();
 
       const status: number = HttpStatus.BAD_REQUEST;
-      const body = response.body as ProblemDetailsDto;
+      const body: ProblemDetailsDto = response.body;
 
       expect(response.statusCode).toEqual(status);
 

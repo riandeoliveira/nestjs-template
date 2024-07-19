@@ -1,7 +1,8 @@
+import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { AuthService } from "@/infrastructure/services/auth.service";
 import { PrismaService } from "@/infrastructure/services/prisma.service";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class VerifyCurrentUserUseCase implements IUseCase {
@@ -13,11 +14,13 @@ export class VerifyCurrentUserUseCase implements IUseCase {
   public async execute(): Promise<void> {
     const id: string = this.authService.getCurrentUserId();
 
-    await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
         deletedAt: null,
       },
     });
+
+    if (!user) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
   }
 }

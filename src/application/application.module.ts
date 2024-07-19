@@ -18,22 +18,22 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
 @Module({
   imports: [InfrastructureModule],
   controllers: [
-    // DeleteUserEndpoint,
+    DeleteUserEndpoint,
     // RenewUserRefreshTokenEndpoint,
     SignInUserEndpoint,
     // SignOutUserEndpoint,
     SignUpUserEndpoint,
     // UpdateUserEndpoint,
-    // VerifyCurrentUserEndpoint,
+    VerifyCurrentUserEndpoint,
   ],
   providers: [
-    // DeleteUserUseCase,
+    DeleteUserUseCase,
     // RenewUserRefreshTokenUseCase,
     SignInUserUseCase,
     // SignOutUserUseCase,
     SignUpUserUseCase,
     // UpdateUserUseCase,
-    // VerifyCurrentUserUseCase,
+    VerifyCurrentUserUseCase,
   ],
 })
 export class ApplicationModule {}
