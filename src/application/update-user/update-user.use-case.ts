@@ -1,9 +1,11 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
+import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
+import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
+import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
-import { PrismaService } from "@/infrastructure/services/prisma.service";
 import {
   BadRequestException,
   ConflictException,
@@ -16,7 +18,8 @@ import { UpdateUserRequest } from "./update-user.request";
 export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
   public constructor(
     private readonly authService: AuthService,
-    private readonly prisma: PrismaService,
+    private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   public async execute(request: UpdateUserRequest): Promise<void> {
@@ -26,23 +29,19 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const id: string = this.authService.getCurrentUserId();
 
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id,
-        deletedAt: null,
-      },
+    const user = await this.userRepository.findOneWhere({
+      id,
+      deletedAt: null,
     });
 
     if (!user) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
 
     if (request.email) {
-      const existingUser = await this.prisma.user.findFirst({
-        where: {
-          id: {
-            not: id,
-          },
-          email: request.email,
+      const existingUser = await this.userRepository.findFirstWhere({
+        id: {
+          not: id,
         },
+        email: request.email,
       });
 
       if (existingUser) throw new ConflictException(ResponseMessages.EMAIL_ALREADY_EXISTS);
@@ -56,46 +55,34 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
       user.password = hashedPassword;
     }
 
-    user.updatedAt = new Date();
-
-    await this.prisma.user.update({
-      where: {
+    await this.userRepository.update(
+      {
         id: user.id,
         deletedAt: null,
       },
-      data: {
-        ...user,
-      },
+      user,
+    );
+
+    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirstWhere({
+      userId: user.id,
+      hasBeenUsed: false,
+      deletedAt: null,
     });
 
-    const personalRefreshToken = await this.prisma.personalRefreshToken.findFirst({
-      where: {
-        userId: user.id,
-        hasBeenUsed: false,
-        deletedAt: null,
-      },
-    });
-
-    await this.prisma.personalRefreshToken.update({
-      where: {
-        ...personalRefreshToken,
-      },
-      data: {
-        hasBeenUsed: true,
-        updatedAt: new Date(),
-      },
+    await this.personalRefreshTokenRepository.update(currentPersonalRefreshToken, {
+      hasBeenUsed: true,
     });
 
     const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
 
     const { value, expiresIn } = tokenData.refreshToken;
 
-    await this.prisma.personalRefreshToken.create({
-      data: {
-        value,
-        expiresIn,
-        userId: user.id,
-      },
+    const personalRefreshToken = new PersonalRefreshToken({
+      value,
+      expiresIn,
+      userId: user.id,
     });
+
+    await this.personalRefreshTokenRepository.create(personalRefreshToken);
   }
 }
