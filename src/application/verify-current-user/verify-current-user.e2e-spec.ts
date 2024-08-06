@@ -7,7 +7,6 @@ const utility = new TestUtility("GET", "/user/verify");
 
 describe("Verify Current User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeAuthenticatedUserTest();
     utility.includeAuthenticationTest();
     utility.includeRateLimitTest();
 

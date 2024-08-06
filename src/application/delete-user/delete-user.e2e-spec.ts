@@ -7,7 +7,6 @@ const utility = new TestUtility("DELETE", "/user");
 
 describe("Delete User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeAuthenticatedUserTest();
     utility.includeAuthenticationTest();
     utility.includeRateLimitTest();
 

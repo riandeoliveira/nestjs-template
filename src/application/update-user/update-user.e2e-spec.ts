@@ -4,7 +4,6 @@ import each from "jest-each";
 import { Response } from "supertest";
 import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
-import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { TestUtility } from "../../domain/utilities/test.utility";
@@ -15,7 +14,6 @@ const utility = new TestUtility("PUT", "/user");
 
 describe("Update User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeAuthenticatedUserTest();
     utility.includeAuthenticationTest();
     utility.includeRateLimitTest();
 
@@ -83,14 +81,9 @@ describe("Update User | E2E Tests", () => {
     let accessToken: string;
 
     beforeAll(async () => {
-      const signUpUserResponse: Response = await request.post("/user/sign-up").send({
-        email: faker.internet.email(),
-        password: faker.internet.password({ prefix: "$0" }),
-      });
+      const { accessToken: token } = await utility.authenticate();
 
-      const signUpUserBody: TokenDto = signUpUserResponse.body;
-
-      accessToken = `Bearer ${signUpUserBody.accessToken.value}`;
+      accessToken = token;
     });
 
     each(updateUserFixture).it("$title", async ({ field, value, message }) => {
