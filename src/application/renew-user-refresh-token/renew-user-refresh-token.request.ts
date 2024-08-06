@@ -8,7 +8,7 @@ export abstract class RenewUserRefreshTokenRequest {
   @ApiProperty("refresh_token", JwtUtility.generateFakeAccessToken())
   @IsNotEmpty({ message: ResponseMessages.REFRESH_TOKEN_IS_REQUIRED })
   @IsString({ message: ResponseMessages.REFRESH_TOKEN_IS_STRING })
-  @Length(192, 192, { message: ResponseMessages.REFRESH_TOKEN_LENGTH })
+  @Length(252, 252, { message: ResponseMessages.REFRESH_TOKEN_LENGTH })
   @Trim()
   public readonly refreshToken: string;
 }
