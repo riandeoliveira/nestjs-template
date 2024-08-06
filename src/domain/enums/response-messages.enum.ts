@@ -18,8 +18,9 @@ export enum ResponseMessages {
   PASSWORD_IS_STRING = "The 'password' must be a string.",
   PASSWORD_IS_STRONG = "The 'password' must have at least: one lowercase letter, one uppercase letter, one number, and one symbol.",
   PASSWORD_RESET_REQUEST = "Password reset request",
+  PERSONAL_REFRESH_TOKEN_NOT_FOUND = "Personal refresh token not found.",
 
-  REFRESH_TOKEN_LENGTH = "The 'refresh token' must have exactly 192 characters.",
+  REFRESH_TOKEN_LENGTH = "The 'refresh token' must have exactly 252 characters.",
   REFRESH_TOKEN_IS_REQUIRED = "The 'refresh token' must be provided.",
   REFRESH_TOKEN_IS_STRING = "The 'refresh token' must be a string.",
   REQUEST_IS_EMPTY = "At least one field must be provided.",

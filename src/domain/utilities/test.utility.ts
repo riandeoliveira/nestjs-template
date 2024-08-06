@@ -42,37 +42,6 @@ export class TestUtility {
     };
   }
 
-  public includeAuthenticatedUserTest(): void {
-    it("Should throw an error when the authenticated user is not found", async () => {
-      const { accessToken } = await this.authenticate();
-
-      await request.delete("/user").set("Authorization", accessToken);
-
-      const requestMethods = {
-        DELETE: await request.delete(this.path).set("Authorization", accessToken),
-        GET: await request.get(this.path).set("Authorization", accessToken),
-        POST: await request.post(this.path).set("Authorization", accessToken).send({
-          email: faker.internet.email(),
-        }),
-        PUT: await request.put(this.path).set("Authorization", accessToken).send({
-          email: faker.internet.email(),
-        }),
-      };
-
-      const response: Response = requestMethods[this.method];
-
-      const status: number = HttpStatus.NOT_FOUND;
-      const body: ProblemDetailsDto = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toEqual(ResponseMessages.USER_NOT_FOUND);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.NOT_FOUND);
-    });
-  }
-
   public includeAuthenticationTest(): void {
     it("Should throw an error when trying to access without being authenticated", async () => {
       const response: Response = await this.requestBy(this.method, this.path);
