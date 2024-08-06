@@ -19,7 +19,7 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
   ) {}
 
   public async execute(request: SignInUserRequest): Promise<SignInUserResponse> {
-    const user = await this.userRepository.findOneWhere({
+    const user = await this.userRepository.findOne({
       email: request.email,
       deletedAt: null,
     });
@@ -32,7 +32,7 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
     }
 
-    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirstWhere({
+    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirst({
       userId: user.id,
       hasBeenUsed: false,
       deletedAt: null,

@@ -31,9 +31,7 @@ export class SignOutUserUseCase implements IUseCase {
     });
 
     await this.prisma.personalRefreshToken.update({
-      where: {
-        ...personalRefreshToken,
-      },
+      where: personalRefreshToken,
       data: {
         hasBeenUsed: true,
         deletedAt: new Date(),

@@ -20,7 +20,7 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
   ) {}
 
   public async execute(request: SignUpUserRequest): Promise<SignUpUserResponse> {
-    const userAlreadyExists = await this.userRepository.findOneWhere({
+    const userAlreadyExists = await this.userRepository.findOne({
       email: request.email,
     });
 

@@ -6,12 +6,7 @@ import { PasswordUtility } from "@/domain/utilities/password.utility";
 import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
 import { AuthService } from "@/infrastructure/services/auth.service";
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()
@@ -29,15 +24,13 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const id: string = this.authService.getCurrentUserId();
 
-    const user = await this.userRepository.findOneWhere({
+    const user = await this.userRepository.findOneOrThrow({
       id,
       deletedAt: null,
     });
 
-    if (!user) throw new NotFoundException(ResponseMessages.USER_NOT_FOUND);
-
     if (request.email) {
-      const existingUser = await this.userRepository.findFirstWhere({
+      const existingUser = await this.userRepository.findFirst({
         id: {
           not: id,
         },
@@ -63,7 +56,7 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
       user,
     );
 
-    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirstWhere({
+    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirst({
       userId: user.id,
       hasBeenUsed: false,
       deletedAt: null,
