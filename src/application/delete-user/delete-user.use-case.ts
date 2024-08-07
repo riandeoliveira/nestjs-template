@@ -12,7 +12,7 @@ export class DeleteUserUseCase implements IUseCase {
   ) {}
 
   public async execute(): Promise<void> {
-    const user: User = await this.userRepository.findCurrent();
+    const user: User = await this.userRepository.findCurrentOrThrow();
 
     await this.userRepository.softDelete(user);
 

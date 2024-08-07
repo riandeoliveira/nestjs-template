@@ -3,7 +3,9 @@ import { BaseEntity } from "../entities/base.entity";
 export interface IRepository<TEntity extends BaseEntity, TWhere> {
   create(entity: TEntity): Promise<void>;
 
-  findFirst(where: TWhere): Promise<TEntity>;
+  findFirst(where: TWhere): Promise<TEntity | null>;
+
+  findFirstOrThrow(where: TWhere): Promise<TEntity>;
 
   findOne(where: TWhere): Promise<TEntity | null>;
 

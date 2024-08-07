@@ -15,10 +15,21 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
 
   public async findFirst(
     where: Prisma.PersonalRefreshTokenWhereInput,
-  ): Promise<PersonalRefreshToken> {
+  ): Promise<PersonalRefreshToken | null> {
     return await this.prisma.personalRefreshToken.findFirst({
       where,
     });
+  }
+
+  public async findFirstOrThrow(
+    where: Prisma.PersonalRefreshTokenWhereInput,
+  ): Promise<PersonalRefreshToken> {
+    const personalRefreshToken: PersonalRefreshToken | null = await this.findFirst(where);
+
+    if (!personalRefreshToken)
+      throw new NotFoundException(ResponseMessages.PERSONAL_REFRESH_TOKEN_NOT_FOUND);
+
+    return personalRefreshToken;
   }
 
   public async findOne(

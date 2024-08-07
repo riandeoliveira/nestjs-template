@@ -16,7 +16,7 @@ export class SignUpUserEndpoint {
     description: "Authenticates a new user and returns a token and user ID.",
     tags: ["User"],
   })
-  @ApiErrorResponses(["BAD_REQUEST", "CONFLICT", "TOO_MANY_REQUESTS", "INTERNAL_SERVER_ERROR"])
+  @ApiErrorResponses(["BAD_REQUEST", "CONFLICT", "INTERNAL_SERVER_ERROR", "TOO_MANY_REQUESTS"])
   @ApiSuccessResponse("CREATED", SignUpUserResponse)
   @Post("sign-up")
   public async handle(@Body() request: SignUpUserRequest): Promise<SignUpUserResponse> {

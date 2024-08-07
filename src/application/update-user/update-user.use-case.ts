@@ -23,10 +23,10 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     if (isRequestEmpty) throw new BadRequestException(ResponseMessages.REQUEST_IS_EMPTY);
 
-    const user: User = await this.userRepository.findCurrent();
+    const user: User = await this.userRepository.findCurrentOrThrow();
 
     if (request.email) {
-      const existingUser = await this.userRepository.findFirst({
+      const existingUser: User | null = await this.userRepository.findFirst({
         id: {
           not: user.id,
         },
@@ -52,11 +52,12 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
       user,
     );
 
-    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirst({
-      userId: user.id,
-      hasBeenUsed: false,
-      deletedAt: null,
-    });
+    const currentPersonalRefreshToken: PersonalRefreshToken =
+      await this.personalRefreshTokenRepository.findFirstOrThrow({
+        userId: user.id,
+        hasBeenUsed: false,
+        deletedAt: null,
+      });
 
     await this.personalRefreshTokenRepository.update(currentPersonalRefreshToken, {
       hasBeenUsed: true,

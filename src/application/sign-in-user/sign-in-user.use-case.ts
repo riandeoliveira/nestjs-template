@@ -1,5 +1,6 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
+import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
@@ -19,7 +20,7 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
   ) {}
 
   public async execute(request: SignInUserRequest): Promise<SignInUserResponse> {
-    const user = await this.userRepository.findOne({
+    const user: User | null = await this.userRepository.findOne({
       email: request.email,
       deletedAt: null,
     });
@@ -32,11 +33,12 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
     }
 
-    const currentPersonalRefreshToken = await this.personalRefreshTokenRepository.findFirst({
-      userId: user.id,
-      hasBeenUsed: false,
-      deletedAt: null,
-    });
+    const currentPersonalRefreshToken: PersonalRefreshToken =
+      await this.personalRefreshTokenRepository.findFirstOrThrow({
+        userId: user.id,
+        hasBeenUsed: false,
+        deletedAt: null,
+      });
 
     await this.personalRefreshTokenRepository.update(currentPersonalRefreshToken, {
       hasBeenUsed: true,

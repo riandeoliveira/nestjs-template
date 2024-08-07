@@ -3,5 +3,5 @@ import { User } from "../entities/user.entity";
 import { IRepository } from "./repository.interface";
 
 export interface IUserRepository extends IRepository<User, Prisma.UserWhereUniqueInput> {
-  findCurrent(): Promise<User>;
+  findCurrentOrThrow(): Promise<User>;
 }

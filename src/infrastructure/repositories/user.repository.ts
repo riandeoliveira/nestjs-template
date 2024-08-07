@@ -17,16 +17,25 @@ export class UserRepository implements IUserRepository {
     await this.prisma.user.create({ data: user });
   }
 
-  public async findCurrent(): Promise<User> {
+  public async findCurrentOrThrow(): Promise<User> {
     const userId: string = this.authService.getCurrentUserId();
 
     return await this.findOneOrThrow({ id: userId, deletedAt: null });
   }
 
-  public async findFirst(where: Prisma.UserWhereInput): Promise<User> {
+  public async findFirst(where: Prisma.UserWhereInput): Promise<User | null> {
     return await this.prisma.user.findFirst({
       where,
     });
+  }
+
+  public async findFirstOrThrow(where: Prisma.UserWhereInput): Promise<User> {
+    const personalRefreshToken: User | null = await this.findFirst(where);
+
+    if (!personalRefreshToken)
+      throw new NotFoundException(ResponseMessages.PERSONAL_REFRESH_TOKEN_NOT_FOUND);
+
+    return personalRefreshToken;
   }
 
   public async findOne(where: Prisma.UserWhereUniqueInput): Promise<User | null> {

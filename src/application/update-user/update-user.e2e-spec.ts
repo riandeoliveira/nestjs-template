@@ -1,4 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
+import { PersonalRefreshToken, User } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
 import { PROBLEM_DETAILS_URI } from "../../domain/constants";
@@ -51,20 +52,21 @@ describe("Update User | E2E Tests", () => {
         password: FakeData.strongPassword(),
       });
 
-      const user = await prisma.user.findUnique({
+      const user: User | null = await prisma.user.findUnique({
         where: {
           id: signUpUserBody.userId,
           deletedAt: null,
         },
       });
 
-      const personalRefreshToken = await prisma.personalRefreshToken.findFirst({
-        where: {
-          userId: user?.id,
-          hasBeenUsed: false,
-          deletedAt: null,
-        },
-      });
+      const personalRefreshToken: PersonalRefreshToken | null =
+        await prisma.personalRefreshToken.findFirst({
+          where: {
+            userId: user?.id,
+            hasBeenUsed: false,
+            deletedAt: null,
+          },
+        });
 
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
 

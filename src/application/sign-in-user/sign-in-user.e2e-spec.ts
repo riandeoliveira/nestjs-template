@@ -1,4 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
+import { PersonalRefreshToken, User } from "@prisma/client";
 import { isUUID } from "class-validator";
 import each from "jest-each";
 import { Response } from "supertest";
@@ -39,7 +40,7 @@ describe("Sign In User | E2E Tests", () => {
 
       const body: TokenDto = response.body;
 
-      const user = await prisma.user.findUnique({
+      const user: User | null = await prisma.user.findUnique({
         where: {
           id: body.userId,
           deletedAt: null,
@@ -51,12 +52,13 @@ describe("Sign In User | E2E Tests", () => {
         user ? user.password : "",
       );
 
-      const personalRefreshToken = await prisma.personalRefreshToken.findUnique({
-        where: {
-          value: body.refreshToken.value,
-          deletedAt: null,
-        },
-      });
+      const personalRefreshToken: PersonalRefreshToken | null =
+        await prisma.personalRefreshToken.findUnique({
+          where: {
+            value: body.refreshToken.value,
+            deletedAt: null,
+          },
+        });
 
       const isAccessTokenValid: boolean = await authService.validateTokenOrThrow(
         body.accessToken.value,

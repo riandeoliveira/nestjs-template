@@ -7,6 +7,6 @@ export class VerifyCurrentUserUseCase implements IUseCase {
   public constructor(private readonly userRepository: UserRepository) {}
 
   public async execute(): Promise<void> {
-    await this.userRepository.findCurrent();
+    await this.userRepository.findCurrentOrThrow();
   }
 }

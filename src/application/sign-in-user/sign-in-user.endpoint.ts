@@ -16,7 +16,13 @@ export class SignInUserEndpoint {
     operationId: "sign-in-user",
     tags: ["User"],
   })
-  @ApiErrorResponses(["BAD_REQUEST", "UNAUTHORIZED", "TOO_MANY_REQUESTS", "INTERNAL_SERVER_ERROR"])
+  @ApiErrorResponses([
+    "BAD_REQUEST",
+    "INTERNAL_SERVER_ERROR",
+    "NOT_FOUND",
+    "TOO_MANY_REQUESTS",
+    "UNAUTHORIZED",
+  ])
   @ApiSuccessResponse("OK", SignInUserResponse)
   @Post("sign-in")
   public async handle(@Body() request: SignInUserRequest): Promise<SignInUserResponse> {

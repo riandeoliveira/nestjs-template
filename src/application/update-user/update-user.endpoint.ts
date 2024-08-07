@@ -19,11 +19,11 @@ export class UpdateUserEndpoint {
   })
   @ApiErrorResponses([
     "BAD_REQUEST",
-    "UNAUTHORIZED",
-    "NOT_FOUND",
     "CONFLICT",
-    "TOO_MANY_REQUESTS",
     "INTERNAL_SERVER_ERROR",
+    "NOT_FOUND",
+    "TOO_MANY_REQUESTS",
+    "UNAUTHORIZED",
   ])
   @ApiSuccessResponse("NO_CONTENT")
   @Put()

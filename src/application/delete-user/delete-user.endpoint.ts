@@ -16,7 +16,7 @@ export class DeleteUserEndpoint {
     operationId: "",
     tags: ["User"],
   })
-  @ApiErrorResponses(["UNAUTHORIZED", "NOT_FOUND", "TOO_MANY_REQUESTS", "INTERNAL_SERVER_ERROR"])
+  @ApiErrorResponses(["INTERNAL_SERVER_ERROR", "NOT_FOUND", "TOO_MANY_REQUESTS", "UNAUTHORIZED"])
   @ApiSuccessResponse("NO_CONTENT")
   @Delete()
   public async handle(): Promise<void> {

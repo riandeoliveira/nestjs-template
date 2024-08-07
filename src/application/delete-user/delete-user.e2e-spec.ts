@@ -1,4 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
+import { PersonalRefreshToken, User } from "@prisma/client";
 import { Response } from "supertest";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { prisma, request } from "../../main.e2e-spec";
@@ -15,19 +16,20 @@ describe("Delete User | E2E Tests", () => {
 
       const response: Response = await request.delete("/user").set("Authorization", accessToken);
 
-      const user = await prisma.user.findUnique({
+      const user: User | null = await prisma.user.findUnique({
         where: {
           id: signUpUserBody.userId,
           deletedAt: null,
         },
       });
 
-      const personalRefreshTokens = await prisma.personalRefreshToken.findMany({
-        where: {
-          value: signUpUserBody.refreshToken.value,
-          deletedAt: null,
-        },
-      });
+      const personalRefreshTokens: PersonalRefreshToken[] =
+        await prisma.personalRefreshToken.findMany({
+          where: {
+            value: signUpUserBody.refreshToken.value,
+            deletedAt: null,
+          },
+        });
 
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
 
