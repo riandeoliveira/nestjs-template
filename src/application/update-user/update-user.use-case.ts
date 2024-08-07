@@ -1,5 +1,6 @@
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
+import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
 import { PasswordUtility } from "@/domain/utilities/password.utility";
@@ -22,17 +23,12 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     if (isRequestEmpty) throw new BadRequestException(ResponseMessages.REQUEST_IS_EMPTY);
 
-    const id: string = this.authService.getCurrentUserId();
-
-    const user = await this.userRepository.findOneOrThrow({
-      id,
-      deletedAt: null,
-    });
+    const user: User = await this.userRepository.findCurrent();
 
     if (request.email) {
       const existingUser = await this.userRepository.findFirst({
         id: {
-          not: id,
+          not: user.id,
         },
         email: request.email,
       });
