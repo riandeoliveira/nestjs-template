@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 
 export abstract class JwtUtility {
   public static generateFakeAccessToken(): string {
@@ -8,12 +8,12 @@ export abstract class JwtUtility {
     };
 
     const payload = {
-      userId: faker.string.uuid(),
+      userId: FakeData.uuid(),
     };
 
     const encodedHeader: string = Buffer.from(JSON.stringify(header)).toString("base64");
     const encodedPayload: string = Buffer.from(JSON.stringify(payload)).toString("base64");
-    const signature: number = faker.number.int(20);
+    const signature: number = FakeData.integer(20);
 
     return `${encodedHeader}.${encodedPayload}.${signature}`;
   }

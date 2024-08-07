@@ -1,5 +1,5 @@
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { faker } from "@faker-js/faker";
+import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 
 export const signInUserFixture = [
   {
@@ -23,13 +23,13 @@ export const signInUserFixture = [
   {
     field: "email",
     title: "Should have a maximum of 64 characters",
-    value: faker.string.alphanumeric(65),
+    value: FakeData.alphanumeric(65),
     message: ResponseMessages.EMAIL_HAS_MAXIMUM_LENGTH,
   },
   {
     field: "email",
     title: "Should have a minimum of 8 characters",
-    value: faker.string.alphanumeric(7),
+    value: FakeData.alphanumeric(7),
     message: ResponseMessages.EMAIL_HAS_MINIMUM_LENGTH,
   },
   {
@@ -53,13 +53,13 @@ export const signInUserFixture = [
   {
     field: "password",
     title: "Should have a maximum of 64 characters",
-    value: faker.string.alphanumeric(65),
+    value: FakeData.alphanumeric(65),
     message: ResponseMessages.PASSWORD_HAS_MAXIMUM_LENGTH,
   },
   {
     field: "password",
     title: "Should have a minimum of 8 characters",
-    value: faker.string.alphanumeric(7),
+    value: FakeData.alphanumeric(7),
     message: ResponseMessages.PASSWORD_HAS_MINIMUM_LENGTH,
   },
 ];

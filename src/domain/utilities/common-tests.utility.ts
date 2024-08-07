@@ -1,5 +1,5 @@
+import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 import { request } from "@/main.e2e-spec";
-import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
 import { Response } from "supertest";
 import { MAXIMUM_REQUESTS_ALLOWED_PER_TTL, PROBLEM_DETAILS_URI } from "../constants";
@@ -23,8 +23,8 @@ export class CommonTestsUtility {
   ) {}
 
   public async authenticate(): Promise<AuthenticateReturnType> {
-    const email: string = faker.internet.email();
-    const password: string = faker.internet.password({ prefix: "$0" });
+    const email: string = FakeData.email();
+    const password: string = FakeData.strongPassword();
 
     const signUpUserResponse: Response = await request.post("/user/sign-up").send({
       email,

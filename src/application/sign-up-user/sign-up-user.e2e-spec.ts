@@ -13,6 +13,7 @@ import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { signUpUserFixture } from "./sign-up-user.fixture";
 
@@ -24,8 +25,8 @@ describe("Sign Up User | E2E Tests", () => {
 
     it("Should sign up a user", async () => {
       const response: Response = await request.post("/user/sign-up").send({
-        email: faker.internet.email(),
-        password: faker.internet.password({ prefix: "$0" }),
+        email: FakeData.email(),
+        password: FakeData.strongPassword(),
       });
 
       const body: TokenDto = response.body;
@@ -66,8 +67,8 @@ describe("Sign Up User | E2E Tests", () => {
     });
 
     it("Should throw an error when trying to sign up a user with an already registered email", async () => {
-      const email: string = faker.internet.email();
-      const password: string = faker.internet.password({ prefix: "$0" });
+      const email: string = FakeData.email();
+      const password: string = FakeData.strongPassword();
 
       await request.post("/user/sign-up").send({
         email,

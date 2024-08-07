@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
 import { isUUID } from "class-validator";
 import each from "jest-each";
@@ -14,6 +13,7 @@ import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { PasswordUtility } from "../../domain/utilities/password.utility";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { signInUserFixture } from "./sign-in-user.fixture";
 
@@ -24,8 +24,8 @@ describe("Sign In User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should sign in a user", async () => {
-      const email: string = faker.internet.email();
-      const password: string = faker.internet.password({ prefix: "$0" });
+      const email: string = FakeData.email();
+      const password: string = FakeData.strongPassword();
 
       await request.post("/user/sign-up").send({
         email,
@@ -83,8 +83,8 @@ describe("Sign In User | E2E Tests", () => {
 
     it("Should throw an error when sending invalid credentials", async () => {
       const response: Response = await request.post("/user/sign-in").send({
-        email: faker.internet.email(),
-        password: faker.internet.password({ prefix: "$0" }),
+        email: FakeData.email(),
+        password: FakeData.strongPassword(),
       });
 
       const status: number = HttpStatus.UNAUTHORIZED;

@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { HttpStatus } from "@nestjs/common";
 import each from "jest-each";
 import { Response } from "supertest";
@@ -7,6 +6,7 @@ import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
@@ -18,11 +18,11 @@ describe("Update User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should throw an error when user email is already being used", async () => {
-      const firstUserEmail: string = faker.internet.email();
+      const firstUserEmail: string = FakeData.email();
 
       await request.post("/user/sign-up").send({
         email: firstUserEmail,
-        password: faker.internet.password({ prefix: "$0" }),
+        password: FakeData.strongPassword(),
       });
 
       const { accessToken } = await commonTestsUtility.authenticate();
@@ -46,13 +46,10 @@ describe("Update User | E2E Tests", () => {
       const { accessToken, signUpUserBody, email, password } =
         await commonTestsUtility.authenticate();
 
-      const response: Response = await request
-        .put("/user")
-        .set("Authorization", accessToken)
-        .send({
-          email: faker.internet.email(),
-          password: faker.internet.password({ prefix: "$0" }),
-        });
+      const response: Response = await request.put("/user").set("Authorization", accessToken).send({
+        email: FakeData.email(),
+        password: FakeData.strongPassword(),
+      });
 
       const user = await prisma.user.findUnique({
         where: {
