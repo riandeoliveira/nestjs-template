@@ -12,15 +12,15 @@ import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { TestUtility } from "../../domain/utilities/test.utility";
+import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { signUpUserFixture } from "./sign-up-user.fixture";
 
-const utility = new TestUtility("POST", "/user/sign-up");
+const commonTestsUtility = new CommonTestsUtility("POST", "/user/sign-up");
 
 describe("Sign Up User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeRateLimitTest();
+    commonTestsUtility.includeRateLimitTest();
 
     it("Should sign up a user", async () => {
       const response: Response = await request.post("/user/sign-up").send({

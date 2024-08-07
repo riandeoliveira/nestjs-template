@@ -6,16 +6,16 @@ import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { TestUtility } from "../../domain/utilities/test.utility";
+import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
-const utility = new TestUtility("PUT", "/user");
+const commonTestsUtility = new CommonTestsUtility("PUT", "/user");
 
 describe("Update User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeAuthenticationTest();
-    utility.includeRateLimitTest();
+    commonTestsUtility.includeAuthenticationTest();
+    commonTestsUtility.includeRateLimitTest();
 
     it("Should throw an error when user email is already being used", async () => {
       const firstUserEmail: string = faker.internet.email();
@@ -25,7 +25,7 @@ describe("Update User | E2E Tests", () => {
         password: faker.internet.password({ prefix: "$0" }),
       });
 
-      const { accessToken } = await utility.authenticate();
+      const { accessToken } = await commonTestsUtility.authenticate();
 
       const response: Response = await request.put("/user").set("Authorization", accessToken).send({
         email: firstUserEmail,
@@ -43,7 +43,8 @@ describe("Update User | E2E Tests", () => {
     });
 
     it("Should update a user", async () => {
-      const { accessToken, signUpUserBody, email, password } = await utility.authenticate();
+      const { accessToken, signUpUserBody, email, password } =
+        await commonTestsUtility.authenticate();
 
       const response: Response = await request
         .put("/user")
@@ -81,7 +82,7 @@ describe("Update User | E2E Tests", () => {
     let accessToken: string;
 
     beforeAll(async () => {
-      const { accessToken: token } = await utility.authenticate();
+      const { accessToken: token } = await commonTestsUtility.authenticate();
 
       accessToken = token;
     });

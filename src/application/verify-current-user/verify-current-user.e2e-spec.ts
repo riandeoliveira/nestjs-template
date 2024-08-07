@@ -1,17 +1,17 @@
 import { HttpStatus } from "@nestjs/common";
 import { Response } from "supertest";
-import { TestUtility } from "../../domain/utilities/test.utility";
+import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { request } from "../../main.e2e-spec";
 
-const utility = new TestUtility("GET", "/user/verify");
+const commonTestsUtility = new CommonTestsUtility("GET", "/user/verify");
 
 describe("Verify Current User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeAuthenticationTest();
-    utility.includeRateLimitTest();
+    commonTestsUtility.includeAuthenticationTest();
+    commonTestsUtility.includeRateLimitTest();
 
     it("Should verify the authenticated user", async () => {
-      const { accessToken } = await utility.authenticate();
+      const { accessToken } = await commonTestsUtility.authenticate();
 
       const response: Response = await request
         .get("/user/verify")

@@ -12,16 +12,16 @@ import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { TokenDto } from "../../domain/dtos/token.dto";
 import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { PasswordUtility } from "../../domain/utilities/password.utility";
-import { TestUtility } from "../../domain/utilities/test.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { signInUserFixture } from "./sign-in-user.fixture";
 
-const utility = new TestUtility("POST", "/user/sign-in");
+const commonTestsUtility = new CommonTestsUtility("POST", "/user/sign-in");
 
 describe("Sign In User | E2E Tests", () => {
   describe("Use Cases", () => {
-    utility.includeRateLimitTest();
+    commonTestsUtility.includeRateLimitTest();
 
     it("Should sign in a user", async () => {
       const email: string = faker.internet.email();
