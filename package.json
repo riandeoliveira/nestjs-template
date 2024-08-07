@@ -10,8 +10,8 @@
   },
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write **/*.ts *.ts",
-    "lint": "eslint --fix **/*.ts *.ts",
+    "format": "prettier --write \"./src/**/*.ts\"",
+    "lint": "eslint --fix \"./src/**/*.ts\"",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main",
