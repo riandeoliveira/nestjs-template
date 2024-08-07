@@ -1,16 +1,26 @@
 import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { IRepository } from "@/domain/interfaces/repository.interface";
+import { IUserRepository } from "@/domain/interfaces/user-repository.interface";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import { AuthService } from "../services/auth.service";
 import { PrismaService } from "../services/prisma.service";
 
 @Injectable()
-export class UserRepository implements IRepository<User, Prisma.UserWhereUniqueInput> {
-  public constructor(private readonly prisma: PrismaService) {}
+export class UserRepository implements IUserRepository {
+  public constructor(
+    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
   public async create(user: User): Promise<void> {
     await this.prisma.user.create({ data: user });
+  }
+
+  public async findCurrent(): Promise<User> {
+    const userId: string = this.authService.getCurrentUserId();
+
+    return await this.findOneOrThrow({ id: userId, deletedAt: null });
   }
 
   public async findFirst(where: Prisma.UserWhereInput): Promise<User> {

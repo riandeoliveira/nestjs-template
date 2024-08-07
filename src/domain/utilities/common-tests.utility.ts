@@ -16,7 +16,7 @@ type AuthenticateReturnType = {
   signUpUserBody: TokenDto;
 };
 
-export class TestUtility {
+export class CommonTestsUtility {
   public constructor(
     private readonly method: HttpMethodsKey,
     private readonly path: string,
@@ -60,16 +60,16 @@ export class TestUtility {
 
   public includeRateLimitTest(): void {
     it("Should throw an error when receiving too many requests", async () => {
-      const responseList: Response[] = [];
+      const responses: Response[] = [];
 
       for (let i = 0; i < MAXIMUM_REQUESTS_ALLOWED_PER_TTL + 1; i++) {
         const response: Response = await this.requestBy(this.method, this.path);
 
-        responseList.push(response);
+        responses.push(response);
       }
 
       const status: number = HttpStatus.TOO_MANY_REQUESTS;
-      const response = responseList.find((res) => res.statusCode === status) as Response;
+      const response = responses.find((response) => response.statusCode === status) as Response;
 
       const body: ProblemDetailsDto = response.body;
 

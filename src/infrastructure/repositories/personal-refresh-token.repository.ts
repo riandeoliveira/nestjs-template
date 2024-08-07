@@ -1,14 +1,12 @@
 import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { IRepository } from "@/domain/interfaces/repository.interface";
+import { IPersonalRefreshTokenRepository } from "@/domain/interfaces/persona-refresh-token-repository.interface";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../services/prisma.service";
 
 @Injectable()
-export class PersonalRefreshTokenRepository
-  implements IRepository<PersonalRefreshToken, Prisma.PersonalRefreshTokenWhereUniqueInput>
-{
+export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepository {
   public constructor(private readonly prisma: PrismaService) {}
 
   public async create(personalRefreshToken: PersonalRefreshToken): Promise<void> {
