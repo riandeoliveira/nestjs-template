@@ -1,15 +1,15 @@
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
 import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses";
 import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
-import { AuthGuard } from "@/infrastructure/guards/auth.guard";
-import { Body, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
+import { Authorize } from "@/infrastructure/decorators/authorize.decorator";
+import { Body, Post } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
 import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
 import { RenewUserRefreshTokenUseCase } from "./renew-user-refresh-token.use-case";
 
-@ApiBearerAuth("jwt")
 @ApiEndpoint("user")
+@Authorize()
 export class RenewUserRefreshTokenEndpoint {
   public constructor(private readonly useCase: RenewUserRefreshTokenUseCase) {}
 
@@ -27,7 +27,6 @@ export class RenewUserRefreshTokenEndpoint {
   ])
   @ApiSuccessResponse("OK", RenewUserRefreshTokenResponse)
   @Post("refresh-token/renew")
-  @UseGuards(AuthGuard)
   public async handle(
     @Body() request: RenewUserRefreshTokenRequest,
   ): Promise<RenewUserRefreshTokenResponse> {

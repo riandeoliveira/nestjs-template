@@ -1,14 +1,14 @@
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
 import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses";
 import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
-import { AuthGuard } from "@/infrastructure/guards/auth.guard";
-import { Body, Put, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
+import { Authorize } from "@/infrastructure/decorators/authorize.decorator";
+import { Body, Put } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
 import { UpdateUserRequest } from "./update-user.request";
 import { UpdateUserUseCase } from "./update-user.use-case";
 
-@ApiBearerAuth("jwt")
 @ApiEndpoint("user")
+@Authorize()
 export class UpdateUserEndpoint {
   public constructor(private readonly useCase: UpdateUserUseCase) {}
 
@@ -27,7 +27,6 @@ export class UpdateUserEndpoint {
   ])
   @ApiSuccessResponse("NO_CONTENT")
   @Put()
-  @UseGuards(AuthGuard)
   public async handle(@Body() request: UpdateUserRequest): Promise<void> {
     await this.useCase.execute(request);
   }
