@@ -1,5 +1,3 @@
-export type ResponseMessagesKey = keyof typeof ResponseMessages;
-
 export enum ResponseMessages {
   EMAIL_ALREADY_EXISTS = "This 'email' is already being used.",
   EMAIL_HAS_MAXIMUM_LENGTH = "The 'email' must have a maximum of 64 characters.",
@@ -32,3 +30,5 @@ export enum ResponseMessages {
 
   USER_NOT_FOUND = "User not found.",
 }
+
+export type ResponseMessagesKey = keyof typeof ResponseMessages;

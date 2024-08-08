@@ -1,5 +1,3 @@
-export type HttpMessagesKey = keyof typeof HttpMessages;
-
 export enum HttpMessages {
   ACCEPTED = "Accepted",
   AMBIGUOUS = "Ambiguous",
@@ -50,3 +48,5 @@ export enum HttpMessages {
   UNSUPPORTED_MEDIA_TYPE = "Unsupported Media Type",
   URI_TOO_LONG = "URI Too Long",
 }
+
+export type HttpMessagesKey = keyof typeof HttpMessages;
