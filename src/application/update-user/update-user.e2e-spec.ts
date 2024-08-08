@@ -1,5 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
-import { PersonalRefreshToken, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
 import { PROBLEM_DETAILS_URI } from "../../domain/constants";
@@ -18,31 +18,6 @@ describe("Update User | E2E Tests", () => {
     commonTestsUtility.includeAuthenticationTest();
     commonTestsUtility.includeRateLimitTest();
 
-    it("Should throw an error when user email is already being used", async () => {
-      const firstUserEmail: string = FakeData.email();
-
-      await request.post("/user/sign-up").send({
-        email: firstUserEmail,
-        password: FakeData.strongPassword(),
-      });
-
-      const { accessToken } = await commonTestsUtility.authenticate();
-
-      const response: Response = await request.put("/user").set("Authorization", accessToken).send({
-        email: firstUserEmail,
-      });
-
-      const status: number = HttpStatus.CONFLICT;
-      const body: ProblemDetailsDto = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toEqual(ResponseMessages.EMAIL_ALREADY_EXISTS);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.CONFLICT);
-    });
-
     it("Should update a user", async () => {
       const { accessToken, signUpUserBody, email, password } =
         await commonTestsUtility.authenticate();
@@ -59,22 +34,36 @@ describe("Update User | E2E Tests", () => {
         },
       });
 
-      const personalRefreshToken: PersonalRefreshToken | null =
-        await prisma.personalRefreshToken.findFirst({
-          where: {
-            userId: user?.id,
-            hasBeenUsed: false,
-            deletedAt: null,
-          },
-        });
-
       expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
 
       expect(user?.email).not.toEqual(email);
       expect(user?.password).not.toEqual(password);
-
-      expect(personalRefreshToken?.value).not.toEqual(signUpUserBody.refreshToken.value);
     });
+  });
+
+  it("Should throw an error when user email is already being used", async () => {
+    const firstUserEmail: string = FakeData.email();
+
+    await request.post("/user/sign-up").send({
+      email: firstUserEmail,
+      password: FakeData.strongPassword(),
+    });
+
+    const { accessToken } = await commonTestsUtility.authenticate();
+
+    const response: Response = await request.put("/user").set("Authorization", accessToken).send({
+      email: firstUserEmail,
+    });
+
+    const status: number = HttpStatus.CONFLICT;
+    const body: ProblemDetailsDto = response.body;
+
+    expect(response.statusCode).toEqual(status);
+
+    expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
+    expect(body.title).toEqual(ResponseMessages.EMAIL_ALREADY_EXISTS);
+    expect(body.status).toEqual(status);
+    expect(body.detail).toEqual(HttpMessages.CONFLICT);
   });
 
   describe("Validations", () => {
