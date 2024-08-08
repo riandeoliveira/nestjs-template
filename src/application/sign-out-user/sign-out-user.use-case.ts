@@ -1,34 +1,29 @@
+import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
+import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
+import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
 import { UserRepository } from "@/infrastructure/repositories/user.repository";
-import { PrismaService } from "@/infrastructure/services/prisma.service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class SignOutUserUseCase implements IUseCase {
   public constructor(
-    private readonly prisma: PrismaService,
+    private readonly personalRefershTokenRepository: PersonalRefreshTokenRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
   public async execute(): Promise<void> {
-    // FIXME: solta erro 500 se tentar deslogar mais de uma vez
+    const user: User = await this.userRepository.findCurrentOrThrow();
 
-    const user = await this.userRepository.findCurrent();
-
-    const personalRefreshToken = await this.prisma.personalRefreshToken.findFirstOrThrow({
-      where: {
+    const personalRefreshToken: PersonalRefreshToken =
+      await this.personalRefershTokenRepository.findFirstOrThrow({
         userId: user.id,
         hasBeenUsed: false,
         deletedAt: null,
-      },
-    });
+      });
 
-    await this.prisma.personalRefreshToken.update({
-      where: personalRefreshToken,
-      data: {
-        hasBeenUsed: true,
-        deletedAt: new Date(),
-      },
+    await this.personalRefershTokenRepository.update(personalRefreshToken, {
+      hasBeenUsed: true,
     });
   }
 }
