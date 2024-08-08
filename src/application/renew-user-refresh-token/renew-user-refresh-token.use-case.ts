@@ -3,9 +3,9 @@ import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.e
 import { User } from "@/domain/entities/user.entity";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { PersonalRefreshTokenRepository } from "@/infrastructure/repositories/personal-refresh-token.repository";
-import { UserRepository } from "@/infrastructure/repositories/user.repository";
-import { AuthService } from "@/infrastructure/services/auth.service";
+import { AuthService } from "@/infrastructure/modules/auth/auth.service";
+import { PersonalRefreshTokenRepository } from "@/infrastructure/modules/repositories/personal-refresh-token.repository";
+import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
 import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";

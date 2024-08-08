@@ -1,43 +1,23 @@
-import { InfrastructureModule } from "@/infrastructure/infrastructure.module";
 import { Module } from "@nestjs/common";
-import { DeleteUserEndpoint } from "./delete-user/delete-user.endpoint";
-import { DeleteUserUseCase } from "./delete-user/delete-user.use-case";
-import { RenewUserRefreshTokenEndpoint } from "./renew-user-refresh-token/renew-user-refresh-token.endpoint";
-import { RenewUserRefreshTokenUseCase } from "./renew-user-refresh-token/renew-user-refresh-token.use-case";
-import { SignInUserEndpoint } from "./sign-in-user/sign-in-user.endpoint";
-import { SignInUserUseCase } from "./sign-in-user/sign-in-user.use-case";
-import { SignOutUserEndpoint } from "./sign-out-user/sign-out-user.endpoint";
-import { SignOutUserUseCase } from "./sign-out-user/sign-out-user.use-case";
-import { SignUpUserEndpoint } from "./sign-up-user/sign-up-user.endpoint";
-import { SignUpUserUseCase } from "./sign-up-user/sign-up-user.use-case";
-import { UpdateUserEndpoint } from "./update-user/update-user.endpoint";
-import { UpdateUserUseCase } from "./update-user/update-user.use-case";
-import { VerifyCurrentUserEndpoint } from "./verify-current-user/verify-current-user.endpoint";
-import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-user.use-case";
-import { ResetUserPasswordEndpoint } from "./reset-user-password/reset-user-password.endpoint";
-import { ResetUserPasswordUseCase } from "./reset-user-password/reset-user-password.use-case";
+import { DeleteUserModule } from "./delete-user/delete-user.module";
+import { RenewUserRefreshTokenModule } from "./renew-user-refresh-token/renew-user-refresh-token.module";
+import { ResetUserPasswordModule } from "./reset-user-password/reset-user-password.module";
+import { SignInUserModule } from "./sign-in-user/sign-in-user.module";
+import { SignOutUserModule } from "./sign-out-user/sign-out-user.module";
+import { SignUpUserModule } from "./sign-up-user/sign-up-user.module";
+import { UpdateUserModule } from "./update-user/update-user.module";
+import { VerifyCurrentUserModule } from "./verify-current-user/verify-current-user.module";
 
 @Module({
-  imports: [InfrastructureModule],
-  controllers: [
-    DeleteUserEndpoint,
-    RenewUserRefreshTokenEndpoint,
-    ResetUserPasswordEndpoint,
-    SignInUserEndpoint,
-    SignOutUserEndpoint,
-    SignUpUserEndpoint,
-    UpdateUserEndpoint,
-    VerifyCurrentUserEndpoint,
-  ],
-  providers: [
-    DeleteUserUseCase,
-    RenewUserRefreshTokenUseCase,
-    ResetUserPasswordUseCase,
-    SignInUserUseCase,
-    SignOutUserUseCase,
-    SignUpUserUseCase,
-    UpdateUserUseCase,
-    VerifyCurrentUserUseCase,
+  imports: [
+    DeleteUserModule,
+    RenewUserRefreshTokenModule,
+    ResetUserPasswordModule,
+    SignInUserModule,
+    SignOutUserModule,
+    SignUpUserModule,
+    UpdateUserModule,
+    VerifyCurrentUserModule,
   ],
 })
 export class ApplicationModule {}

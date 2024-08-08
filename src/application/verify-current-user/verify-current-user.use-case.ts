@@ -1,5 +1,5 @@
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { UserRepository } from "@/infrastructure/repositories/user.repository";
+import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

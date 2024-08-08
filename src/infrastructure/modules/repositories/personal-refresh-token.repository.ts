@@ -3,7 +3,7 @@ import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { IPersonalRefreshTokenRepository } from "@/domain/interfaces/personal-refresh-token-repository.interface";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { PrismaService } from "../services/prisma.service";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepository {
