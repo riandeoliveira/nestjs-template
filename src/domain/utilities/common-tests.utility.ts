@@ -1,13 +1,12 @@
 import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 import { request } from "@/main.e2e-spec";
-import { HttpStatus } from "@nestjs/common";
 import { Response } from "supertest";
 import { MAXIMUM_REQUESTS_ALLOWED_PER_TTL, PROBLEM_DETAILS_URI } from "../constants";
-import { ProblemDetailsDto } from "../dtos/problem-details.dto";
+import { HttpResponses } from "../constants/http-responses";
 import { TokenDto } from "../dtos/token.dto";
-import { HttpMessages } from "../enums/http-messages.enum";
 import { HttpMethodsKey } from "../enums/http-methods.enum";
 import { ResponseMessages } from "../enums/response-messages.enum";
+import { ProblemDetailsType } from "../types/problem-details";
 
 type AuthenticateReturnType = {
   accessToken: string;
@@ -46,15 +45,16 @@ export class CommonTestsUtility {
     it("Should throw an error when trying to access without being authenticated", async () => {
       const response: Response = await this.requestBy(this.method, this.path);
 
-      const status: number = HttpStatus.UNAUTHORIZED;
-      const body: ProblemDetailsDto = response.body;
+      const { status, message } = HttpResponses.UNAUTHORIZED;
+
+      const body: ProblemDetailsType = response.body;
 
       expect(response.statusCode).toEqual(status);
 
       expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
       expect(body.title).toEqual(ResponseMessages.UNAUTHORIZED_OPERATION);
       expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.UNAUTHORIZED);
+      expect(body.detail).toEqual(message);
     });
   }
 
@@ -68,10 +68,11 @@ export class CommonTestsUtility {
         responses.push(response);
       }
 
-      const status: number = HttpStatus.TOO_MANY_REQUESTS;
+      const { status } = HttpResponses.TOO_MANY_REQUESTS;
+
       const response = responses.find((response) => response.statusCode === status) as Response;
 
-      const body: ProblemDetailsDto = response.body;
+      const body: ProblemDetailsType = response.body;
 
       expect(response.statusCode).toEqual(status);
 

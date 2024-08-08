@@ -1,4 +1,3 @@
-import { HttpStatus } from "@nestjs/common";
 import { PersonalRefreshToken, User } from "@prisma/client";
 import { isUUID } from "class-validator";
 import each from "jest-each";
@@ -8,10 +7,10 @@ import {
   PROBLEM_DETAILS_URI,
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
 } from "../../domain/constants";
-import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
+import { HttpResponses } from "../../domain/constants/http-responses";
 import { TokenDto } from "../../domain/dtos/token.dto";
-import { HttpMessages } from "../../domain/enums/http-messages.enum";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { PasswordUtility } from "../../domain/utilities/password.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
@@ -68,7 +67,7 @@ describe("Reset User Password | E2E Tests", () => {
         body.refreshToken.value,
       );
 
-      expect(response.statusCode).toEqual(HttpStatus.OK);
+      expect(response.statusCode).toEqual(HttpResponses.OK.status);
 
       expect(isUUID(body.userId)).toEqual(true);
       expect(body.accessToken.expiresIn).toEqual(ACCESS_TOKEN_EXPIRATION_IN_SECONDS);
@@ -95,15 +94,16 @@ describe("Reset User Password | E2E Tests", () => {
           password_confirmation: secondPassword,
         });
 
-      const status: number = HttpStatus.BAD_REQUEST;
-      const body: ProblemDetailsDto = response.body;
+      const { status, message } = HttpResponses.BAD_REQUEST;
+
+      const body: ProblemDetailsType = response.body;
 
       expect(response.statusCode).toEqual(status);
 
       expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
       expect(body.title).toEqual(ResponseMessages.PASSWORDS_ARE_EQUIVALENT);
       expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.BAD_REQUEST);
+      expect(body.detail).toEqual(message);
     });
   });
 
@@ -125,15 +125,16 @@ describe("Reset User Password | E2E Tests", () => {
         })
         .retry();
 
-      const status: number = HttpStatus.BAD_REQUEST;
-      const body: ProblemDetailsDto = response.body;
+      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+
+      const body: ProblemDetailsType = response.body;
 
       expect(response.statusCode).toEqual(status);
 
       expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
       expect(body.title).toContain(message);
       expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.BAD_REQUEST);
+      expect(body.detail).toEqual(detail);
     });
   });
 });

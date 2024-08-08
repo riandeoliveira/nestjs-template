@@ -1,5 +1,5 @@
-import { HttpStatus } from "@nestjs/common";
 import { Response } from "supertest";
+import { HttpResponses } from "../../domain/constants/http-responses";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { request } from "../../main.e2e-spec";
 
@@ -17,7 +17,7 @@ describe("Verify Current User | E2E Tests", () => {
         .get("/user/verify")
         .set("Authorization", accessToken);
 
-      expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
+      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
     });
   });
 });

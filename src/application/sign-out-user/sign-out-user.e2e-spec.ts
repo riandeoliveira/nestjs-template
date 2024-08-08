@@ -1,6 +1,6 @@
-import { HttpStatus } from "@nestjs/common";
 import { PersonalRefreshToken } from "@prisma/client";
 import { Response } from "supertest";
+import { HttpResponses } from "../../domain/constants/http-responses";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { prisma, request } from "../../main.e2e-spec";
 
@@ -32,7 +32,7 @@ describe("Sign Out User | E2E Tests", () => {
           },
         });
 
-      expect(response.status).toEqual(HttpStatus.NO_CONTENT);
+      expect(response.status).toEqual(HttpResponses.NO_CONTENT.status);
 
       expect(personalRefreshTokenBeforeRequest?.hasBeenUsed).toEqual(false);
       expect(personalRefreshTokenAfterRequest?.hasBeenUsed).toEqual(true);

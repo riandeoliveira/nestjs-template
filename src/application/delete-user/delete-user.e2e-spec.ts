@@ -1,6 +1,6 @@
-import { HttpStatus } from "@nestjs/common";
 import { PersonalRefreshToken, User } from "@prisma/client";
 import { Response } from "supertest";
+import { HttpResponses } from "../../domain/constants/http-responses";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { prisma, request } from "../../main.e2e-spec";
 
@@ -31,7 +31,7 @@ describe("Delete User | E2E Tests", () => {
           },
         });
 
-      expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
+      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
 
       expect(user).toEqual(null);
       expect(personalRefreshTokens).toEqual([]);

@@ -1,11 +1,10 @@
-import { HttpStatus } from "@nestjs/common";
 import { User } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
 import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
-import { HttpMessages } from "../../domain/enums/http-messages.enum";
+import { HttpResponses } from "../../domain/constants/http-responses";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { prisma, request } from "../../main.e2e-spec";
@@ -34,7 +33,7 @@ describe("Update User | E2E Tests", () => {
         },
       });
 
-      expect(response.statusCode).toEqual(HttpStatus.NO_CONTENT);
+      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
 
       expect(user?.email).not.toEqual(email);
       expect(user?.password).not.toEqual(password);
@@ -55,15 +54,16 @@ describe("Update User | E2E Tests", () => {
       email: firstUserEmail,
     });
 
-    const status: number = HttpStatus.CONFLICT;
-    const body: ProblemDetailsDto = response.body;
+    const { status, message } = HttpResponses.CONFLICT;
+
+    const body: ProblemDetailsType = response.body;
 
     expect(response.statusCode).toEqual(status);
 
     expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
     expect(body.title).toEqual(ResponseMessages.EMAIL_ALREADY_EXISTS);
     expect(body.status).toEqual(status);
-    expect(body.detail).toEqual(HttpMessages.CONFLICT);
+    expect(body.detail).toEqual(message);
   });
 
   describe("Validations", () => {
@@ -84,15 +84,16 @@ describe("Update User | E2E Tests", () => {
         })
         .retry();
 
-      const status: number = HttpStatus.BAD_REQUEST;
-      const body: ProblemDetailsDto = response.body;
+      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+
+      const body: ProblemDetailsType = response.body;
 
       expect(response.statusCode).toEqual(status);
 
       expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
       expect(body.title).toContain(message);
       expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(HttpMessages.BAD_REQUEST);
+      expect(body.detail).toEqual(detail);
     });
   });
 });

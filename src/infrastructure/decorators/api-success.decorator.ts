@@ -1,15 +1,15 @@
-import { HttpMessages, HttpMessagesKey } from "@/domain/enums/http-messages.enum";
-import { HttpCode, HttpStatus, Type, applyDecorators } from "@nestjs/common";
+import { HttpResponses, HttpSuccessResponsesKey } from "@/domain/constants/http-responses";
+import { HttpCode, Type, applyDecorators } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 
 type ApiSuccessResponseType = Type<unknown> | Function | [Function] | string;
 
-export const ApiSuccessResponse = (key: HttpMessagesKey, type?: ApiSuccessResponseType) => {
-  const status: number = HttpStatus[key];
+export const ApiSuccessResponse = (key: HttpSuccessResponsesKey, type?: ApiSuccessResponseType) => {
+  const { status, message } = HttpResponses[key];
 
   const decorator = ApiResponse({
-    status: HttpStatus[key],
-    description: HttpMessages[key],
+    status,
+    description: message,
     type,
   });
 
