@@ -9,6 +9,10 @@ export enum ResponseMessages {
 
   INVALID_CREDENTIALS = "The 'email' or 'password' is invalid.",
 
+  PASSWORD_CONFIRMATION_HAS_MAXIMUM_LENGTH = "The 'password confirmation' must have a maximum of 64 characters.",
+  PASSWORD_CONFIRMATION_HAS_MINIMUM_LENGTH = "The 'password confirmation' must have a minimum of 8 characters.",
+  PASSWORD_CONFIRMATION_IS_REQUIRED = "The 'password confirmation' must be provided.",
+  PASSWORD_CONFIRMATION_IS_STRING = "The 'password confirmation' must be a string.",
   PASSWORD_HAS_MAXIMUM_LENGTH = "The 'password' must have a maximum of 64 characters.",
   PASSWORD_HAS_MINIMUM_LENGTH = "The 'password' must have a minimum of 8 characters.",
   PASSWORD_IS_EQUIVALENT = "The 'passwords' must be equivalent.",

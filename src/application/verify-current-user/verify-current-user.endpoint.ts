@@ -1,5 +1,5 @@
 import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
-import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses";
+import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses.decorator";
 import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
 import { Authorize } from "@/infrastructure/decorators/authorize.decorator";
 import { Get } from "@nestjs/common";

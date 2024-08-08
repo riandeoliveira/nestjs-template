@@ -1,32 +1,29 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
+import { HasMaxLength } from "@/infrastructure/decorators/has-max-length.decorator";
+import { HasMinLength } from "@/infrastructure/decorators/has-min-length.decorator";
+import { IsEmail } from "@/infrastructure/decorators/is-email.decorator";
+import { IsRequired } from "@/infrastructure/decorators/is-required.decorator";
+import { IsString } from "@/infrastructure/decorators/is-string.decorator";
+import { IsStrongPassword } from "@/infrastructure/decorators/is-strong-password.decorator";
 import { Trim } from "@/infrastructure/decorators/trim.decorator";
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsStrongPassword,
-  MaxLength,
-  MinLength,
-} from "class-validator";
 
 export abstract class SignInUserRequest {
   @ApiProperty("email", FakeData.email())
-  @IsEmail({}, { message: ResponseMessages.EMAIL_IS_VALID })
-  @IsNotEmpty({ message: ResponseMessages.EMAIL_IS_REQUIRED })
-  @IsString({ message: ResponseMessages.EMAIL_IS_STRING })
-  @MaxLength(64, { message: ResponseMessages.EMAIL_HAS_MAXIMUM_LENGTH })
-  @MinLength(8, { message: ResponseMessages.EMAIL_HAS_MINIMUM_LENGTH })
+  @HasMaxLength(64, "EMAIL_HAS_MAXIMUM_LENGTH")
+  @HasMinLength(8, "EMAIL_HAS_MINIMUM_LENGTH")
+  @IsEmail("EMAIL_IS_VALID")
+  @IsRequired("EMAIL_IS_REQUIRED")
+  @IsString("EMAIL_IS_STRING")
   @Trim()
   public readonly email: string;
 
   @ApiProperty("password", FakeData.strongPassword())
-  @IsNotEmpty({ message: ResponseMessages.PASSWORD_IS_REQUIRED })
-  @IsString({ message: ResponseMessages.PASSWORD_IS_STRING })
-  @IsStrongPassword({}, { message: ResponseMessages.PASSWORD_IS_STRONG })
-  @MaxLength(64, { message: ResponseMessages.PASSWORD_HAS_MAXIMUM_LENGTH })
-  @MinLength(8, { message: ResponseMessages.PASSWORD_HAS_MINIMUM_LENGTH })
+  @HasMaxLength(64, "PASSWORD_HAS_MAXIMUM_LENGTH")
+  @HasMinLength(8, "PASSWORD_HAS_MINIMUM_LENGTH")
+  @IsRequired("PASSWORD_IS_REQUIRED")
+  @IsString("PASSWORD_IS_STRING")
+  @IsStrongPassword("PASSWORD_IS_STRONG")
   @Trim()
   public readonly password: string;
 }

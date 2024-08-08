@@ -1,14 +1,15 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { JwtUtility } from "@/domain/utilities/jwt.utility";
+import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
 import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
+import { HasExactLength } from "@/infrastructure/decorators/has-exact-length.decorator";
+import { IsRequired } from "@/infrastructure/decorators/is-required.decorator";
+import { IsString } from "@/infrastructure/decorators/is-string.decorator";
 import { Trim } from "@/infrastructure/decorators/trim.decorator";
-import { IsNotEmpty, IsString, Length } from "class-validator";
 
 export abstract class RenewUserRefreshTokenRequest {
-  @ApiProperty("refresh_token", JwtUtility.generateFakeAccessToken())
-  @IsNotEmpty({ message: ResponseMessages.REFRESH_TOKEN_IS_REQUIRED })
-  @IsString({ message: ResponseMessages.REFRESH_TOKEN_IS_STRING })
-  @Length(252, 252, { message: ResponseMessages.REFRESH_TOKEN_LENGTH })
+  @ApiProperty("refresh_token", FakeData.accessToken())
+  @HasExactLength(252, "REFRESH_TOKEN_LENGTH")
+  @IsRequired("REFRESH_TOKEN_IS_REQUIRED")
+  @IsString("REFRESH_TOKEN_IS_STRING")
   @Trim()
   public readonly refreshToken: string;
 }
