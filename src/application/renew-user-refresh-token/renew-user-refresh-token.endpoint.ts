@@ -20,10 +20,10 @@ export class RenewUserRefreshTokenEndpoint {
   })
   @ApiErrorResponses([
     "BAD_REQUEST",
-    "UNAUTHORIZED",
+    "INTERNAL_SERVER_ERROR",
     "NOT_FOUND",
     "TOO_MANY_REQUESTS",
-    "INTERNAL_SERVER_ERROR",
+    "UNAUTHORIZED",
   ])
   @ApiSuccessResponse("OK", RenewUserRefreshTokenResponse)
   @Post("refresh-token/renew")
