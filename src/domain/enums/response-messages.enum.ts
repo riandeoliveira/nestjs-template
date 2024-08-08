@@ -15,11 +15,11 @@ export enum ResponseMessages {
   PASSWORD_CONFIRMATION_IS_STRING = "The 'password confirmation' must be a string.",
   PASSWORD_HAS_MAXIMUM_LENGTH = "The 'password' must have a maximum of 64 characters.",
   PASSWORD_HAS_MINIMUM_LENGTH = "The 'password' must have a minimum of 8 characters.",
-  PASSWORD_IS_EQUIVALENT = "The 'passwords' must be equivalent.",
   PASSWORD_IS_REQUIRED = "The 'password' must be provided.",
   PASSWORD_IS_STRING = "The 'password' must be a string.",
   PASSWORD_IS_STRONG = "The 'password' must have at least: one lowercase letter, one uppercase letter, one number, and one symbol.",
-  PASSWORD_RESET_REQUEST = "Password reset request",
+  PASSWORD_RESET_REQUEST = "Password reset request.",
+  PASSWORDS_ARE_EQUIVALENT = "The 'passwords' must be equivalent.",
   PERSONAL_REFRESH_TOKEN_NOT_FOUND = "Personal refresh token not found.",
 
   REFRESH_TOKEN_LENGTH = "The 'refresh token' must have exactly 252 characters.",

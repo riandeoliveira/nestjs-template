@@ -14,12 +14,15 @@ import { UpdateUserEndpoint } from "./update-user/update-user.endpoint";
 import { UpdateUserUseCase } from "./update-user/update-user.use-case";
 import { VerifyCurrentUserEndpoint } from "./verify-current-user/verify-current-user.endpoint";
 import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-user.use-case";
+import { ResetUserPasswordEndpoint } from "./reset-user-password/reset-user-password.endpoint";
+import { ResetUserPasswordUseCase } from "./reset-user-password/reset-user-password.use-case";
 
 @Module({
   imports: [InfrastructureModule],
   controllers: [
     DeleteUserEndpoint,
     RenewUserRefreshTokenEndpoint,
+    ResetUserPasswordEndpoint,
     SignInUserEndpoint,
     SignOutUserEndpoint,
     SignUpUserEndpoint,
@@ -29,6 +32,7 @@ import { VerifyCurrentUserUseCase } from "./verify-current-user/verify-current-u
   providers: [
     DeleteUserUseCase,
     RenewUserRefreshTokenUseCase,
+    ResetUserPasswordUseCase,
     SignInUserUseCase,
     SignOutUserUseCase,
     SignUpUserUseCase,
