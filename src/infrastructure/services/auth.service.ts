@@ -3,7 +3,6 @@ import {
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
 } from "@/domain/constants";
 import { TokenDto } from "@/domain/dtos/token.dto";
-import { IAuthService } from "@/domain/interfaces/auth-service.interface";
 import { IRequest } from "@/domain/interfaces/request.interface";
 import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
@@ -11,7 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
 
 @Injectable({ scope: Scope.REQUEST })
-export class AuthService implements IAuthService {
+export class AuthService {
   public constructor(
     private readonly jwtService: JwtService,
 
