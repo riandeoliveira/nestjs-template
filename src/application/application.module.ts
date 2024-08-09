@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { DeleteUserModule } from "./delete-user/delete-user.module";
+import { ForgotUserPasswordModule } from "./forgot-user-password/forgot-user-password.module";
 import { RenewUserRefreshTokenModule } from "./renew-user-refresh-token/renew-user-refresh-token.module";
 import { ResetUserPasswordModule } from "./reset-user-password/reset-user-password.module";
 import { SignInUserModule } from "./sign-in-user/sign-in-user.module";
@@ -11,6 +12,7 @@ import { VerifyCurrentUserModule } from "./verify-current-user/verify-current-us
 @Module({
   imports: [
     DeleteUserModule,
+    ForgotUserPasswordModule,
     RenewUserRefreshTokenModule,
     ResetUserPasswordModule,
     SignInUserModule,

@@ -18,7 +18,6 @@ export enum ResponseMessages {
   PASSWORD_IS_REQUIRED = "The 'password' must be provided.",
   PASSWORD_IS_STRING = "The 'password' must be a string.",
   PASSWORD_IS_STRONG = "The 'password' must have at least: one lowercase letter, one uppercase letter, one number, and one symbol.",
-  PASSWORD_RESET_REQUEST = "Password reset request.",
   PASSWORDS_ARE_EQUIVALENT = "The 'passwords' must be equivalent.",
   PERSONAL_REFRESH_TOKEN_NOT_FOUND = "Personal refresh token not found.",
 

@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "./modules/auth/auth.module";
-import { EnvironmentModule } from "./modules/environment/environment.module";
+import { MailModule } from "./modules/mail/mail.module";
 import { PrismaModule } from "./modules/prisma/prisma.module";
 import { RateLimitModule } from "./modules/rate-limit/rate-limit.module";
 import { RepositoriesModule } from "./modules/repositories/repositories.module";
 
 @Module({
-  imports: [AuthModule, EnvironmentModule, PrismaModule, RateLimitModule, RepositoriesModule],
-  exports: [AuthModule, RepositoriesModule],
+  imports: [AuthModule, MailModule, PrismaModule, RateLimitModule, RepositoriesModule],
+  exports: [AuthModule, MailModule, RepositoriesModule],
 })
 export class InfrastructureModule {}
