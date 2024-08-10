@@ -2,7 +2,8 @@
 
 import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from "@nestjs/swagger";
-// import * as swaggerUi from "swagger-ui-express";
+import * as express from "express";
+import path from "node:path";
 
 export abstract class DocumentationExtension {
   public static configureWith(application: INestApplication): void {
@@ -21,6 +22,8 @@ export abstract class DocumentationExtension {
       .build();
 
     const document: OpenAPIObject = SwaggerModule.createDocument(application, configuration);
+
+    application.use("/swagger-ui", express.static(path.join(__dirname, "swagger-ui")));
 
     SwaggerModule.setup("swagger", application, document);
 
