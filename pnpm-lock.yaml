@@ -97,9 +97,6 @@ devDependencies:
   '@types/supertest':
     specifier: ^6.0.2
     version: 6.0.2
-  '@types/swagger-ui-express':
-    specifier: ^4.1.6
-    version: 4.1.6
   '@typescript-eslint/eslint-plugin':
     specifier: ^7.15.0
     version: 7.16.0(@typescript-eslint/parser@7.16.0)(eslint@8.57.0)(typescript@5.5.3)
@@ -1660,13 +1657,6 @@ packages:
     dependencies:
       '@types/methods': 1.1.4
       '@types/superagent': 8.1.7
-    dev: true
-
-  /@types/swagger-ui-express@4.1.6:
-    resolution: {integrity: sha512-UVSiGYXa5IzdJJG3hrc86e8KdZWLYxyEsVoUI4iPXc7CO4VZ3AfNP8d/8+hrDRIqz+HAaSMtZSqAsF3Nq2X/Dg==}
-    dependencies:
-      '@types/express': 4.17.21
-      '@types/serve-static': 1.15.7
     dev: true
 
   /@types/validator@13.12.0:
