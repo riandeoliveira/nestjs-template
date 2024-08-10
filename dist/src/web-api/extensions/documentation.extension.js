@@ -15,9 +15,7 @@ class DocumentationExtension {
             .setVersion("v0.1.0")
             .build();
         const document = swagger_1.SwaggerModule.createDocument(application, configuration);
-        swagger_1.SwaggerModule.setup("swagger", application, document, {
-            swaggerUiEnabled: true,
-        });
+        swagger_1.SwaggerModule.setup("swagger", application, document);
     }
 }
 exports.DocumentationExtension = DocumentationExtension;

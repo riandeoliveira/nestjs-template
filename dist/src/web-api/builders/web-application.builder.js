@@ -23,8 +23,7 @@ class WebApplicationBuilder {
     }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            this.application.listen((_a = process.env.PORT) !== null && _a !== void 0 ? _a : process.env.API_PORT);
+            this.application.listen(process.env.API_PORT);
         });
     }
     configureDocumentation() {

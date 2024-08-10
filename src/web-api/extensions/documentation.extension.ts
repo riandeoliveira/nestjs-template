@@ -21,8 +21,6 @@ export abstract class DocumentationExtension {
 
     const document: OpenAPIObject = SwaggerModule.createDocument(application, configuration);
 
-    SwaggerModule.setup("swagger", application, document, {
-      swaggerUiEnabled: true,
-    });
+    SwaggerModule.setup("swagger", application, document);
   }
 }

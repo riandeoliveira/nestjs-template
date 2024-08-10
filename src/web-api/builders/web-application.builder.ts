@@ -14,7 +14,7 @@ export class WebApplicationBuilder {
   }
 
   public async run(): Promise<void> {
-    this.application.listen(process.env.PORT ?? process.env.API_PORT);
+    this.application.listen(process.env.API_PORT);
   }
 
   public configureDocumentation(): void {
