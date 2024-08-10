@@ -5,7 +5,7 @@ export abstract class BaseEntity {
 
   public createdAt: Date = new Date();
 
-  public updatedAt?: Date;
+  public updatedAt: Date = null;
 
-  public deletedAt?: Date;
+  public deletedAt: Date = null;
 }

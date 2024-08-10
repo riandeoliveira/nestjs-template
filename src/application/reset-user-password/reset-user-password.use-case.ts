@@ -32,12 +32,14 @@ export class ResetUserPasswordUseCase
 
     user.password = hashedPassword;
 
+    const { id, ...rest } = user;
+
     await this.userRepository.update(
       {
         id: user.id,
         deletedAt: null,
       },
-      user,
+      rest,
     );
 
     const currentPersonalRefreshToken: PersonalRefreshToken =

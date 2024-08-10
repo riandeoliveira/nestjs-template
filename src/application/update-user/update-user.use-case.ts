@@ -17,6 +17,8 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
 
     const user: User = await this.userRepository.findCurrentOrThrow();
 
+    const userEmail: string = user.email;
+
     if (request.email) {
       const existingUser: User | null = await this.userRepository.findFirst({
         id: {
@@ -36,12 +38,14 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserRequest> {
       user.password = hashedPassword;
     }
 
+    const { id, ...rest } = user;
+
     await this.userRepository.update(
       {
         id: user.id,
         deletedAt: null,
       },
-      user,
+      rest,
     );
   }
 }

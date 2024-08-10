@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                    String                 @id @unique @default(uuid()) @map("id")
+  id                    String                 @id @default(uuid()) @map("_id")
   email                 String                 @unique @map("email")
   password              String                 @map("password")
   personalRefreshTokens PersonalRefreshToken[]
@@ -20,7 +20,7 @@ model User {
 }
 
 model PersonalRefreshToken {
-  id          String    @id @unique @default(uuid()) @map("id")
+  id          String    @id @default(uuid()) @map("_id")
   value       String    @unique @map("value")
   expiresIn   Int       @map("expires_in")
   hasBeenUsed Boolean   @default(false) @map("has_been_used")
