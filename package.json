@@ -9,7 +9,7 @@
     "email": "johndoe2000@mail.com"
   },
   "scripts": {
-    "build": "nest build && prisma generate",
+    "build": "prisma generate && nest build",
     "format": "prettier --write \"./src/**/*.ts\"",
     "lint": "eslint --fix \"./src/**/*.ts\"",
     "start:debug": "nest start --debug --watch",
