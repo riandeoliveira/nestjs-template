@@ -2,8 +2,6 @@
 
 import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from "@nestjs/swagger";
-import * as express from "express";
-import path from "node:path";
 
 export abstract class DocumentationExtension {
   public static configureWith(application: INestApplication): void {
@@ -23,10 +21,9 @@ export abstract class DocumentationExtension {
 
     const document: OpenAPIObject = SwaggerModule.createDocument(application, configuration);
 
-    application.use("/swagger-ui", express.static(path.join(__dirname, "swagger-ui")));
-
-    SwaggerModule.setup("swagger", application, document);
-
-    // application.use("/swagger", swaggerUi.serve, swaggerUi.setup(document));
+    SwaggerModule.setup("swagger", application, document, {
+      customCssUrl: "https://unpkg.com/swagger-ui-dist@3/swagger-ui.css",
+      customJs: "https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js",
+    });
   }
 }
