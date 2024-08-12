@@ -9,7 +9,9 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
   builder.application.setGlobalPrefix("api");
 
   builder.application.enableCors({
-    origin: "*"
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    credentials: true,
   });
 
   builder.configureDocumentation();
