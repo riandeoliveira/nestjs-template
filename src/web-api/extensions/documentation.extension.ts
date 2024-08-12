@@ -21,9 +21,6 @@ export abstract class DocumentationExtension {
 
     const document: OpenAPIObject = SwaggerModule.createDocument(application, configuration);
 
-    SwaggerModule.setup("swagger", application, document, {
-      customCssUrl: "https://unpkg.com/swagger-ui-dist@3/swagger-ui.css",
-      customJs: "https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js",
-    });
+    SwaggerModule.setup("swagger", application, document);
   }
 }

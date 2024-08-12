@@ -8,6 +8,10 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
 
   builder.application.setGlobalPrefix("api");
 
+  builder.application.enableCors({
+    origin: "*"
+  });
+
   builder.configureDocumentation();
   builder.configureProblemDetails();
   builder.configureValidation();
