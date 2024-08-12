@@ -11,10 +11,11 @@
       "src": "/(.*)",
       "dest": "dist/src/main.js",
       "methods": [
+        "DELETE",
         "GET",
+        "OPTIONS",
         "POST",
-        "PUT",
-        "DELETE"
+        "PUT"
       ]
     }
   ]

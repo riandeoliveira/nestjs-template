@@ -15,6 +15,11 @@ const web_application_builder_1 = require("./web-api/builders/web-application.bu
     const builder = new web_application_builder_1.WebApplicationBuilder();
     yield builder.create();
     builder.application.setGlobalPrefix("api");
+    builder.application.enableCors({
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        credentials: true,
+    });
     builder.configureDocumentation();
     builder.configureProblemDetails();
     builder.configureValidation();
