@@ -1,9 +1,9 @@
-import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
-import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses.decorator";
-import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
-import { Authorize } from "@/infrastructure/decorators/authorize.decorator";
 import { Body, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
+import { ApiEndpoint } from "../../infrastructure/decorators/api-endpoint.decorator";
+import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-responses.decorator";
+import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
+import { Authorize } from "../../infrastructure/decorators/authorize.decorator";
 import { ResetUserPasswordRequest } from "./reset-user-password.request";
 import { ResetUserPasswordResponse } from "./reset-user-password.response";
 import { ResetUserPasswordUseCase } from "./reset-user-password.use-case";

@@ -1,9 +1,9 @@
-import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
-import { User } from "@/domain/entities/user.entity";
-import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { PersonalRefreshTokenRepository } from "@/infrastructure/modules/repositories/personal-refresh-token.repository";
-import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { Injectable } from "@nestjs/common";
+import { PersonalRefreshToken } from "../../domain/entities/personal-refresh-token.entity";
+import { User } from "../../domain/entities/user.entity";
+import { IUseCase } from "../../domain/interfaces/use-case.interface";
+import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
+import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 
 @Injectable()
 export class SignOutUserUseCase implements IUseCase {

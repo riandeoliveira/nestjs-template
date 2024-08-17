@@ -1,13 +1,13 @@
-import { TokenDto } from "@/domain/dtos/token.dto";
-import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
-import { User } from "@/domain/entities/user.entity";
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { PasswordUtility } from "@/domain/utilities/password.utility";
-import { AuthService } from "@/infrastructure/modules/auth/auth.service";
-import { PersonalRefreshTokenRepository } from "@/infrastructure/modules/repositories/personal-refresh-token.repository";
-import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { TokenDto } from "../../domain/dtos/token.dto";
+import { PersonalRefreshToken } from "../../domain/entities/personal-refresh-token.entity";
+import { User } from "../../domain/entities/user.entity";
+import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { IUseCase } from "../../domain/interfaces/use-case.interface";
+import { PasswordUtility } from "../../domain/utilities/password.utility";
+import { AuthService } from "../../infrastructure/modules/auth/auth.service";
+import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
+import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { ResetUserPasswordRequest } from "./reset-user-password.request";
 import { ResetUserPasswordResponse } from "./reset-user-password.response";
 

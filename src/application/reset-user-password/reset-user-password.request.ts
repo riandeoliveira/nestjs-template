@@ -1,10 +1,10 @@
-import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
-import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
-import { HasMaxLength } from "@/infrastructure/decorators/has-max-length.decorator";
-import { HasMinLength } from "@/infrastructure/decorators/has-min-length.decorator";
-import { IsRequired } from "@/infrastructure/decorators/is-required.decorator";
-import { IsString } from "@/infrastructure/decorators/is-string.decorator";
-import { IsStrongPassword } from "@/infrastructure/decorators/is-strong-password.decorator";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { ApiProperty } from "../../infrastructure/decorators/api-property.decorator";
+import { HasMaxLength } from "../../infrastructure/decorators/has-max-length.decorator";
+import { HasMinLength } from "../../infrastructure/decorators/has-min-length.decorator";
+import { IsRequired } from "../../infrastructure/decorators/is-required.decorator";
+import { IsString } from "../../infrastructure/decorators/is-string.decorator";
+import { IsStrongPassword } from "../../infrastructure/decorators/is-strong-password.decorator";
 
 export abstract class ResetUserPasswordRequest {
   @ApiProperty("password", FakeData.strongPassword())

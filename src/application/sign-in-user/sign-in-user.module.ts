@@ -1,5 +1,5 @@
-import { InfrastructureModule } from "@/infrastructure/infrastructure.module";
 import { Module } from "@nestjs/common";
+import { InfrastructureModule } from "../../infrastructure/infrastructure.module";
 import { SignInUserEndpoint } from "./sign-in-user.endpoint";
 import { SignInUserUseCase } from "./sign-in-user.use-case";
 

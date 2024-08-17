@@ -1,8 +1,8 @@
-import { ApiEndpoint } from "@/infrastructure/decorators/api-endpoint.decorator";
-import { ApiErrorResponses } from "@/infrastructure/decorators/api-error-responses.decorator";
-import { ApiSuccessResponse } from "@/infrastructure/decorators/api-success.decorator";
 import { Body, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
+import { ApiEndpoint } from "../../infrastructure/decorators/api-endpoint.decorator";
+import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-responses.decorator";
+import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
 import { SignUpUserRequest } from "./sign-up-user.request";
 import { SignUpUserResponse } from "./sign-up-user.response";
 import { SignUpUserUseCase } from "./sign-up-user.use-case";

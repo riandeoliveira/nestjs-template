@@ -1,5 +1,5 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
+import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 
 export const updateUserFixture = [
   {
