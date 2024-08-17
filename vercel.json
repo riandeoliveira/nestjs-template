@@ -18,5 +18,6 @@
         "PUT"
       ]
     }
-  ]
+  ],
+  "buildCommand": "pnpm build"
 }
