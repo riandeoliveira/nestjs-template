@@ -12,7 +12,7 @@
     "build": "nest build",
     "format": "prettier --write \"./src/**/*.ts\"",
     "lint": "eslint --fix \"./src/**/*.ts\"",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && mkdir dist",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/src/main",
