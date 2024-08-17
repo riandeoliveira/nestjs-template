@@ -1,0 +1,34 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ResponseMessages = void 0;
+var ResponseMessages;
+(function (ResponseMessages) {
+    ResponseMessages["EMAIL_ALREADY_EXISTS"] = "This 'email' is already being used.";
+    ResponseMessages["EMAIL_HAS_MAXIMUM_LENGTH"] = "The 'email' must have a maximum of 64 characters.";
+    ResponseMessages["EMAIL_HAS_MINIMUM_LENGTH"] = "The 'email' must have a minimum of 8 characters.";
+    ResponseMessages["EMAIL_IS_REQUIRED"] = "The 'email' must be provided.";
+    ResponseMessages["EMAIL_IS_STRING"] = "The 'email' must be a string.";
+    ResponseMessages["EMAIL_IS_VALID"] = "The 'email' must be valid.";
+    ResponseMessages["ENTITY_NOT_FOUND"] = "Entity not found.";
+    ResponseMessages["INVALID_CREDENTIALS"] = "The 'email' or 'password' is invalid.";
+    ResponseMessages["PASSWORD_CONFIRMATION_HAS_MAXIMUM_LENGTH"] = "The 'password confirmation' must have a maximum of 64 characters.";
+    ResponseMessages["PASSWORD_CONFIRMATION_HAS_MINIMUM_LENGTH"] = "The 'password confirmation' must have a minimum of 8 characters.";
+    ResponseMessages["PASSWORD_CONFIRMATION_IS_REQUIRED"] = "The 'password confirmation' must be provided.";
+    ResponseMessages["PASSWORD_CONFIRMATION_IS_STRING"] = "The 'password confirmation' must be a string.";
+    ResponseMessages["PASSWORD_HAS_MAXIMUM_LENGTH"] = "The 'password' must have a maximum of 64 characters.";
+    ResponseMessages["PASSWORD_HAS_MINIMUM_LENGTH"] = "The 'password' must have a minimum of 8 characters.";
+    ResponseMessages["PASSWORD_IS_REQUIRED"] = "The 'password' must be provided.";
+    ResponseMessages["PASSWORD_IS_STRING"] = "The 'password' must be a string.";
+    ResponseMessages["PASSWORD_IS_STRONG"] = "The 'password' must have at least: one lowercase letter, one uppercase letter, one number, and one symbol.";
+    ResponseMessages["PASSWORDS_ARE_EQUIVALENT"] = "The 'passwords' must be equivalent.";
+    ResponseMessages["PERSONAL_REFRESH_TOKEN_NOT_FOUND"] = "Personal refresh token not found.";
+    ResponseMessages["REFRESH_TOKEN_LENGTH"] = "The 'refresh token' must have exactly 252 characters.";
+    ResponseMessages["REFRESH_TOKEN_IS_REQUIRED"] = "The 'refresh token' must be provided.";
+    ResponseMessages["REFRESH_TOKEN_IS_STRING"] = "The 'refresh token' must be a string.";
+    ResponseMessages["REQUEST_IS_EMPTY"] = "At least one field must be provided.";
+    ResponseMessages["TOO_MANY_REQUESTS"] = "Too many requests. Please try again later.";
+    ResponseMessages["UNAUTHORIZED_OPERATION"] = "You do not have permission to perform this action.";
+    ResponseMessages["UNKNOWN_ERROR"] = "An unknown error has occurred. Please try again later.";
+    ResponseMessages["USER_NOT_FOUND"] = "User not found.";
+})(ResponseMessages || (exports.ResponseMessages = ResponseMessages = {}));
+//# sourceMappingURL=response-messages.enum.js.map
