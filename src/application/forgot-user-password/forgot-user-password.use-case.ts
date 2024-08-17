@@ -1,4 +1,3 @@
-import { EnvironmentVariables } from "@/domain/constants/environment-variables";
 import { TokenDto } from "@/domain/dtos/token.dto";
 import { User } from "@/domain/entities/user.entity";
 import { IUseCase } from "@/domain/interfaces/use-case.interface";
@@ -25,7 +24,7 @@ export class ForgotUserPasswordUseCase implements IUseCase<ForgotUserPasswordReq
     const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
 
     await this.mailService.sendMail({
-      from: EnvironmentVariables.MAIL_SENDER,
+      from: process.env.MAIL_SENDER,
       to: user.email,
       subject: "Password Reset Request",
       template: "./forgot-user-password.template.hbs",
@@ -33,7 +32,7 @@ export class ForgotUserPasswordUseCase implements IUseCase<ForgotUserPasswordReq
         model: {
           email: user.email,
           accessToken: tokenData.accessToken.value,
-          clientUrl: EnvironmentVariables.CLIENT_URL,
+          clientUrl: process.env.CLIENT_URL,
         },
       },
     });

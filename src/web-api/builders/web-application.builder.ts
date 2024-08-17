@@ -1,4 +1,3 @@
-import { EnvironmentVariables } from "@/domain/constants/environment-variables";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { IncomingMessage, Server, ServerResponse } from "http";
@@ -15,7 +14,7 @@ export class WebApplicationBuilder {
   }
 
   public async run(): Promise<void> {
-    this.application.listen(EnvironmentVariables.PORT ?? EnvironmentVariables.API_PORT);
+    this.application.listen(process.env.PORT ?? 3000);
   }
 
   public configureDocumentation(): void {
