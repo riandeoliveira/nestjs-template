@@ -77,11 +77,13 @@ export class UserRepository implements IUserRepository {
   }
 
   public async update(where: Prisma.UserWhereUniqueInput, data: Partial<User>): Promise<void> {
+    const { id, ...rest } = data;
+
     await this.prisma.user.update({
       where,
       data: {
         updatedAt: new Date(),
-        ...data,
+        ...rest,
       },
     });
   }
