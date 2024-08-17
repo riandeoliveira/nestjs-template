@@ -1,0 +1,1 @@
+{"version":3,"file":"is-email.decorator.js","sourceRoot":"","sources":["../../../../src/infrastructure/decorators/is-email.decorator.ts"],"names":[],"mappings":";;;AAAA,sFAA8F;AAC9F,qDAA8D;AAEvD,MAAM,OAAO,GAAG,CAAC,UAA+B,EAAqB,EAAE;IAC5E,OAAO,IAAA,yBAAgB,EAAC,EAAE,EAAE,EAAE,OAAO,EAAE,yCAAgB,CAAC,UAAU,CAAC,EAAE,CAAC,CAAC;AACzE,CAAC,CAAC;AAFW,QAAA,OAAO,WAElB"}
