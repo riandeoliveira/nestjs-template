@@ -1,0 +1,1 @@
+export declare const ApiProperty: (name: string, example?: any) => <TFunction extends Function, Y>(target: object | TFunction, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<Y>) => void;
