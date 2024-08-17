@@ -1,10 +1,10 @@
-import { TokenDto } from "@/domain/dtos/token.dto";
-import { User } from "@/domain/entities/user.entity";
-import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { AuthService } from "@/infrastructure/modules/auth/auth.service";
-import { MailService } from "@/infrastructure/modules/mail/mail.service";
-import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { Injectable } from "@nestjs/common";
+import { TokenDto } from "../../domain/dtos/token.dto";
+import { User } from "../../domain/entities/user.entity";
+import { IUseCase } from "../../domain/interfaces/use-case.interface";
+import { AuthService } from "../../infrastructure/modules/auth/auth.service";
+import { MailService } from "../../infrastructure/modules/mail/mail.service";
+import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { ForgotUserPasswordRequest } from "./forgot-user-password.request";
 
 @Injectable()
