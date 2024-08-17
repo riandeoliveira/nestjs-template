@@ -1,6 +1,6 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { Injectable } from "@nestjs/common";
 import { ThrottlerException, ThrottlerGuard } from "@nestjs/throttler";
+import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
 
 @Injectable()
 export class RateLimitGuard extends ThrottlerGuard {

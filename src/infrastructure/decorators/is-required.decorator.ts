@@ -1,4 +1,4 @@
-import { ResponseMessages, ResponseMessagesKey } from "@/domain/enums/response-messages.enum";
+import { ResponseMessages, ResponseMessagesKey } from "../../domain/enums/response-messages.enum";
 import { IsNotEmpty } from "class-validator";
 
 export const IsRequired = (messageKey: ResponseMessagesKey): PropertyDecorator => {

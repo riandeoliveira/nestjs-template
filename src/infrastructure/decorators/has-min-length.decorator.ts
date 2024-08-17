@@ -1,4 +1,4 @@
-import { ResponseMessages, ResponseMessagesKey } from "@/domain/enums/response-messages.enum";
+import { ResponseMessages, ResponseMessagesKey } from "../../domain/enums/response-messages.enum";
 import { MinLength } from "class-validator";
 
 export const HasMinLength = (min: number, messageKey: ResponseMessagesKey): PropertyDecorator => {
