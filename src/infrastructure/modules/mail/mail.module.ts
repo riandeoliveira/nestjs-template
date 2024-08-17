@@ -1,3 +1,4 @@
+import { EnvironmentVariables } from "@/domain/constants/environment-variables";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { Module } from "@nestjs/common";
@@ -8,11 +9,11 @@ import { MailService } from "./mail.service";
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: process.env.MAIL_HOST,
-        sender: process.env.MAIL_SENDER,
+        host: EnvironmentVariables.MAIL_HOST,
+        sender: EnvironmentVariables.MAIL_SENDER,
         auth: {
-          user: process.env.MAIL_USERNAME,
-          pass: process.env.MAIL_PASSWORD,
+          user: EnvironmentVariables.MAIL_USERNAME,
+          pass: EnvironmentVariables.MAIL_PASSWORD,
         },
       },
       template: {

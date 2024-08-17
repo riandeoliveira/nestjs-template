@@ -1,3 +1,4 @@
+import { EnvironmentVariables } from "@/domain/constants/environment-variables";
 import { ResponseMessages } from "@/domain/enums/response-messages.enum";
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -16,7 +17,7 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload: { userId: string } = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
+        secret: EnvironmentVariables.JWT_SECRET,
       });
 
       request.currentUserId = payload.userId;

@@ -1,3 +1,4 @@
+import { EnvironmentVariables } from "@/domain/constants/environment-variables";
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { EnvironmentModule } from "../environment/environment.module";
@@ -8,7 +9,7 @@ import { AuthService } from "./auth.service";
     EnvironmentModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
+      secret: EnvironmentVariables.JWT_SECRET,
     }),
   ],
   providers: [AuthService],
