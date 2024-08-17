@@ -1,5 +1,5 @@
-import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
-import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { ApiProperty } from "../../infrastructure/decorators/api-property.decorator";
 import { PROBLEM_DETAILS_URI } from "../constants";
 import { HttpResponses } from "../constants/http-responses";
 
