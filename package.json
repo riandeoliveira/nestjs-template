@@ -9,7 +9,7 @@
     "email": "riandiasdeoliveira2001@gmail.com"
   },
   "scripts": {
-    "build": "prisma generate && nest build",
+    "build": "nest build",
     "format": "prettier --write \"./src/**/*.ts\"",
     "lint": "eslint --fix \"./src/**/*.ts\"",
     "postinstall": "prisma generate",
