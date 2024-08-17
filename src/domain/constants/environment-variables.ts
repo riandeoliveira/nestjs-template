@@ -14,5 +14,5 @@ export const EnvironmentVariables = {
 
   NODE_ENV: process.env.NODE_ENV,
 
-  PORT: process.env.PORT.toUpperCase(),
+  PORT: process.env.PORT,
 } as const;
