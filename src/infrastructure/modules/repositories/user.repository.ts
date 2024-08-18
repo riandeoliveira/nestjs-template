@@ -1,6 +1,6 @@
-import { User } from "@/domain/entities/user.entity";
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { IUserRepository } from "@/domain/interfaces/user-repository.interface";
+import { User } from "../../../domain/entities/user.entity";
+import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
+import { IUserRepository } from "../../../domain/interfaces/user-repository.interface";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { AuthService } from "../auth/auth.service";

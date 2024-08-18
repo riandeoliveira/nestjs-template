@@ -1,4 +1,4 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
+import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
 import { Injectable } from "@nestjs/common";
 import { ThrottlerException, ThrottlerGuard } from "@nestjs/throttler";
 

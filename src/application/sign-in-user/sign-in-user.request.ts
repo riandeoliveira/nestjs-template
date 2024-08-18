@@ -1,12 +1,12 @@
-import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
-import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
-import { HasMaxLength } from "@/infrastructure/decorators/has-max-length.decorator";
-import { HasMinLength } from "@/infrastructure/decorators/has-min-length.decorator";
-import { IsEmail } from "@/infrastructure/decorators/is-email.decorator";
-import { IsRequired } from "@/infrastructure/decorators/is-required.decorator";
-import { IsString } from "@/infrastructure/decorators/is-string.decorator";
-import { IsStrongPassword } from "@/infrastructure/decorators/is-strong-password.decorator";
-import { Trim } from "@/infrastructure/decorators/trim.decorator";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { ApiProperty } from "../../infrastructure/decorators/api-property.decorator";
+import { HasMaxLength } from "../../infrastructure/decorators/has-max-length.decorator";
+import { HasMinLength } from "../../infrastructure/decorators/has-min-length.decorator";
+import { IsEmail } from "../../infrastructure/decorators/is-email.decorator";
+import { IsRequired } from "../../infrastructure/decorators/is-required.decorator";
+import { IsString } from "../../infrastructure/decorators/is-string.decorator";
+import { IsStrongPassword } from "../../infrastructure/decorators/is-strong-password.decorator";
+import { Trim } from "../../infrastructure/decorators/trim.decorator";
 
 export abstract class SignInUserRequest {
   @ApiProperty("email", FakeData.email())

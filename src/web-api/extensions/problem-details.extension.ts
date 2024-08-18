@@ -1,5 +1,5 @@
-import { PROBLEM_DETAILS_URI } from "@/domain/constants";
-import { UnknownErrorsFilter } from "@/infrastructure/filters/unknown-errors.filter";
+import { PROBLEM_DETAILS_URI } from "../../domain/constants";
+import { UnknownErrorsFilter } from "../../infrastructure/filters/unknown-errors.filter";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import _ from "lodash";
 import { HttpExceptionFilter } from "nest-problem-details-filter";

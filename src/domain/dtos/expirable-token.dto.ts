@@ -1,5 +1,5 @@
-import { FakeData } from "@/infrastructure/abstractions/fake-data.abstraction";
-import { ApiProperty } from "@/infrastructure/decorators/api-property.decorator";
+import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { ApiProperty } from "../../infrastructure/decorators/api-property.decorator";
 
 export abstract class ExpirableTokenDto {
   @ApiProperty("value", FakeData.accessToken())

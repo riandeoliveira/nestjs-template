@@ -1,12 +1,12 @@
-import { TokenDto } from "@/domain/dtos/token.dto";
-import { PersonalRefreshToken } from "@/domain/entities/personal-refresh-token.entity";
-import { User } from "@/domain/entities/user.entity";
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
-import { IUseCase } from "@/domain/interfaces/use-case.interface";
-import { AuthService } from "@/infrastructure/modules/auth/auth.service";
-import { PersonalRefreshTokenRepository } from "@/infrastructure/modules/repositories/personal-refresh-token.repository";
-import { UserRepository } from "@/infrastructure/modules/repositories/user.repository";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { TokenDto } from "../../domain/dtos/token.dto";
+import { PersonalRefreshToken } from "../../domain/entities/personal-refresh-token.entity";
+import { User } from "../../domain/entities/user.entity";
+import { ResponseMessages } from "../../domain/enums/response-messages.enum";
+import { IUseCase } from "../../domain/interfaces/use-case.interface";
+import { AuthService } from "../../infrastructure/modules/auth/auth.service";
+import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
+import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
 import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
 

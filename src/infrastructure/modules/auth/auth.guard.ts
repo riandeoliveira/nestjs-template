@@ -1,4 +1,4 @@
-import { ResponseMessages } from "@/domain/enums/response-messages.enum";
+import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
