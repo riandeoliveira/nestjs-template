@@ -1,5 +1,6 @@
 import { SerializerInterceptor } from "./infrastructure/interceptors/serializer.interceptor";
 import { WebApplicationBuilder } from "./web-api/builders/web-application.builder";
+import "tsconfig-paths/src/register";
 
 (async (): Promise<void> => {
   const builder = new WebApplicationBuilder();
