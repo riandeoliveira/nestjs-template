@@ -19,6 +19,7 @@ The application is available online and can be accessed [here](https://www.examp
 
 <br />
 
+
 <div align="center">
   <img src="https://skillicons.dev/icons?i=docker" width="48" title="Docker" /> &nbsp;&nbsp;
   <img src="https://skillicons.dev/icons?i=git" width="48" title="Git" /> &nbsp;&nbsp;
