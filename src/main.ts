@@ -11,7 +11,7 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
   // builder.application.use(cookieParser());
 
   builder.application.enableCors({
-    origin: "*",
+    origin: "https://reactjs-template-dtqx8uosg-rian-oliveiras-projects.vercel.app/",
   });
 
   builder.configureDocumentation();
