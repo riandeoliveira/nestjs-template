@@ -15,6 +15,7 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
     credentials: true,
     methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
     origin: "*",
+    allowedHeaders: "*",
   });
 
   builder.configureDocumentation();
