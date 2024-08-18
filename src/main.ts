@@ -13,7 +13,7 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
 
   builder.application.enableCors({
     credentials: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
     origin: "*",
   });
 
