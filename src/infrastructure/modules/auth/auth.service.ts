@@ -31,6 +31,20 @@ export class AuthService {
       expiresIn: REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
     });
 
+    const response = this.request.response;
+
+    response.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: ACCESS_TOKEN_EXPIRATION_IN_SECONDS * 1000,
+    });
+
+    response.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: REFRESH_TOKEN_EXPIRATION_IN_SECONDS * 1000,
+    });
+
     return {
       userId,
       accessToken: {
