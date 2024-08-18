@@ -14,7 +14,7 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
   builder.application.enableCors({
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-    origin: "*",
+    origin: process.env.CLIENT_URL,
   });
 
   builder.configureDocumentation();
