@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import { SerializerInterceptor } from "./infrastructure/interceptors/serializer.interceptor";
 import { WebApplicationBuilder } from "./web-api/builders/web-application.builder";
 
@@ -9,7 +8,7 @@ import { WebApplicationBuilder } from "./web-api/builders/web-application.builde
 
   builder.application.setGlobalPrefix("api");
 
-  builder.application.use(cookieParser());
+  // builder.application.use(cookieParser());
 
   builder.application.enableCors({
     credentials: true,
