@@ -1,4 +1,3 @@
-import "module-alias/register";
 import { SerializerInterceptor } from "./infrastructure/interceptors/serializer.interceptor";
 import { WebApplicationBuilder } from "./web-api/builders/web-application.builder";
 
