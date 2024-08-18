@@ -1,13 +1,13 @@
+import { Inject, Injectable, Scope } from "@nestjs/common";
+import { REQUEST } from "@nestjs/core";
+import { JwtService } from "@nestjs/jwt";
+import { randomUUID } from "crypto";
 import {
   ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
 } from "../../../domain/constants";
 import { TokenDto } from "../../../domain/dtos/token.dto";
 import { IRequest } from "../../../domain/interfaces/request.interface";
-import { Inject, Injectable, Scope } from "@nestjs/common";
-import { REQUEST } from "@nestjs/core";
-import { JwtService } from "@nestjs/jwt";
-import { randomUUID } from "crypto";
 
 @Injectable({ scope: Scope.REQUEST })
 export class AuthService {

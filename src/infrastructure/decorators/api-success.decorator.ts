@@ -1,6 +1,6 @@
-import { HttpResponses, HttpSuccessResponsesKey } from "../../domain/constants/http-responses";
 import { HttpCode, Type, applyDecorators } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
+import { HttpResponses, HttpSuccessResponsesKey } from "../../domain/constants/http-responses";
 
 type ApiSuccessResponseType = Type<unknown> | Function | [Function] | string;
 

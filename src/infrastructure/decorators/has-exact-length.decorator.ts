@@ -1,5 +1,5 @@
-import { ResponseMessages, ResponseMessagesKey } from "../../domain/enums/response-messages.enum";
 import { Length } from "class-validator";
+import { ResponseMessages, ResponseMessagesKey } from "../../domain/enums/response-messages.enum";
 
 export const HasExactLength = (
   length: number,

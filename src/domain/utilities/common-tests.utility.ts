@@ -1,6 +1,6 @@
+import { Response } from "supertest";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { request } from "../../main.e2e-spec";
-import { Response } from "supertest";
 import { MAXIMUM_REQUESTS_ALLOWED_PER_TTL, PROBLEM_DETAILS_URI } from "../constants";
 import { HttpResponses } from "../constants/http-responses";
 import { TokenDto } from "../dtos/token.dto";

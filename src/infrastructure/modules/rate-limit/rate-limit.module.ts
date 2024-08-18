@@ -1,10 +1,10 @@
+import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerModule } from "@nestjs/throttler";
 import {
   MAXIMUM_REQUESTS_ALLOWED_PER_TTL,
   TIME_TO_LIVE_IN_SECONDS,
 } from "../../../domain/constants";
-import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { ThrottlerModule } from "@nestjs/throttler";
 import { RateLimitGuard } from "./rate-limit.guard";
 
 @Module({

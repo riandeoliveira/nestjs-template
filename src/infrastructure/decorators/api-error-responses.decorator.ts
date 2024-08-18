@@ -1,3 +1,5 @@
+import { applyDecorators } from "@nestjs/common";
+import { ApiResponse } from "@nestjs/swagger";
 import { HttpErrorResponsesKey, HttpResponses } from "../../domain/constants/http-responses";
 import { BadRequestDto } from "../../domain/dtos/bad-request.dto";
 import { ConflictDto } from "../../domain/dtos/conflict.dto";
@@ -6,8 +8,6 @@ import { NotFoundDto } from "../../domain/dtos/not-found.dto";
 import { ProblemDetailsDto } from "../../domain/dtos/problem-details.dto";
 import { TooManyRequestsDto } from "../../domain/dtos/too-many-requests.dto";
 import { UnauthorizedDto } from "../../domain/dtos/unauthorized.dto";
-import { applyDecorators } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
 
 export const ApiErrorResponses = (
   keys: HttpErrorResponsesKey[],

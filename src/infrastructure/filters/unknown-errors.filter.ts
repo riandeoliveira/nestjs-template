@@ -1,9 +1,9 @@
-import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
 import { HttpArgumentsHost } from "@nestjs/common/interfaces";
 import { Response } from "express";
+import { PROBLEM_DETAILS_URI } from "../../domain/constants";
+import { HttpResponses } from "../../domain/constants/http-responses";
+import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 
 @Catch()
 export class UnknownErrorsFilter implements ExceptionFilter {
