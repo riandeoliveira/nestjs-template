@@ -39,7 +39,6 @@ The application is available online and can be accessed [here](https://www.examp
 
 <br />
 
-
 <p align="center">
   ✨ Made with 💙 by <a href="https://github.com/riandeoliveira"><strong>Rian Oliveira</strong></a> ✨
 </p>
