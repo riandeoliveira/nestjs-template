@@ -28,6 +28,6 @@ export class SignOutUserUseCase implements IUseCase {
       hasBeenUsed: true,
     });
 
-    // this.authService.clearJwtCookies();
+    this.authService.clearJwtCookies();
   }
 }

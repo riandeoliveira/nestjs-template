@@ -2,7 +2,7 @@ import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
-import { CookieOptions, response } from "express";
+import { CookieOptions } from "express";
 import {
   ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
@@ -45,12 +45,10 @@ export class AuthService {
   }
 
   public clearJwtCookies(): void {
-    response.clearCookie("access_token", this.getCookieOptions(ACCESS_TOKEN_EXPIRATION_IN_SECONDS));
+    const { response } = this.request;
 
-    response.clearCookie(
-      "refresh_token",
-      this.getCookieOptions(REFRESH_TOKEN_EXPIRATION_IN_SECONDS),
-    );
+    response.clearCookie("access_token");
+    response.clearCookie("refresh_token");
   }
 
   public async generateTokenData(userId: string): Promise<TokenDto> {
