@@ -36,12 +36,14 @@ export class AuthService {
     response.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: true,
+      sameSite: "strict",
       maxAge: ACCESS_TOKEN_EXPIRATION_IN_SECONDS * 1000,
     });
 
     response.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
+      sameSite: "strict",
       maxAge: REFRESH_TOKEN_EXPIRATION_IN_SECONDS * 1000,
     });
 
