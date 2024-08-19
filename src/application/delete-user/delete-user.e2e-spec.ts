@@ -12,9 +12,9 @@ describe("Delete User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should delete the authenticated user", async () => {
-      const { accessToken, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
 
-      const response: Response = await request.delete("/user").set("Authorization", accessToken);
+      const response: Response = await request.delete("/user").set("Cookie", jwtCookie);
 
       const user: User | null = await prisma.user.findUnique({
         where: {

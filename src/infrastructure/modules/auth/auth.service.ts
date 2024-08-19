@@ -2,6 +2,7 @@ import { Inject, Injectable, Scope } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
+import { CookieOptions, response } from "express";
 import {
   ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
@@ -18,6 +19,40 @@ export class AuthService {
     private readonly request: IRequest,
   ) {}
 
+  private getCookieOptions(expiresIn: number): CookieOptions {
+    return {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: expiresIn * 1000,
+    };
+  }
+
+  private sendJwtCookiesToClient(accessToken: string, refreshToken: string): void {
+    const { response } = this.request;
+
+    response.cookie(
+      "access_token",
+      accessToken,
+      this.getCookieOptions(ACCESS_TOKEN_EXPIRATION_IN_SECONDS),
+    );
+
+    response.cookie(
+      "refresh_token",
+      refreshToken,
+      this.getCookieOptions(REFRESH_TOKEN_EXPIRATION_IN_SECONDS),
+    );
+  }
+
+  public clearJwtCookies(): void {
+    response.clearCookie("access_token", this.getCookieOptions(ACCESS_TOKEN_EXPIRATION_IN_SECONDS));
+
+    response.clearCookie(
+      "refresh_token",
+      this.getCookieOptions(REFRESH_TOKEN_EXPIRATION_IN_SECONDS),
+    );
+  }
+
   public async generateTokenData(userId: string): Promise<TokenDto> {
     const payload = {
       userId,
@@ -27,25 +62,12 @@ export class AuthService {
     const accessToken: string = await this.jwtService.signAsync(payload, {
       expiresIn: ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
     });
+
     const refreshToken: string = await this.jwtService.signAsync(payload, {
       expiresIn: REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
     });
 
-    const response = this.request.response;
-
-    response.cookie("access_token", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: ACCESS_TOKEN_EXPIRATION_IN_SECONDS * 1000,
-    });
-
-    response.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: REFRESH_TOKEN_EXPIRATION_IN_SECONDS * 1000,
-    });
+    this.sendJwtCookiesToClient(accessToken, refreshToken);
 
     return {
       userId,

@@ -12,7 +12,7 @@ describe("Sign Out User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should sign out a user", async () => {
-      const { accessToken, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
 
       const personalRefreshTokenBeforeRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({
@@ -23,7 +23,7 @@ describe("Sign Out User | E2E Tests", () => {
 
       const response: Response = await request
         .post("/user/sign-out")
-        .set("Authorization", accessToken);
+        .set("Cookie", jwtCookie);
 
       const personalRefreshTokenAfterRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({

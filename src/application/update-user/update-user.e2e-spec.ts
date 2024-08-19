@@ -18,10 +18,10 @@ describe("Update User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should update a user", async () => {
-      const { accessToken, signUpUserBody, email, password } =
+      const { jwtCookie, signUpUserBody, email, password } =
         await commonTestsUtility.authenticate();
 
-      const response: Response = await request.put("/user").set("Authorization", accessToken).send({
+      const response: Response = await request.put("/user").set("Cookie", jwtCookie).send({
         email: FakeData.email(),
         password: FakeData.strongPassword(),
       });
@@ -48,9 +48,9 @@ describe("Update User | E2E Tests", () => {
       password: FakeData.strongPassword(),
     });
 
-    const { accessToken } = await commonTestsUtility.authenticate();
+    const { jwtCookie } = await commonTestsUtility.authenticate();
 
-    const response: Response = await request.put("/user").set("Authorization", accessToken).send({
+    const response: Response = await request.put("/user").set("Cookie", jwtCookie).send({
       email: firstUserEmail,
     });
 
@@ -67,18 +67,18 @@ describe("Update User | E2E Tests", () => {
   });
 
   describe("Validations", () => {
-    let accessToken: string;
+    let cookie: string;
 
     beforeAll(async () => {
-      const { accessToken: token } = await commonTestsUtility.authenticate();
+      const { jwtCookie } = await commonTestsUtility.authenticate();
 
-      accessToken = token;
+      cookie = jwtCookie;
     });
 
     each(updateUserFixture).it("$title", async ({ field, value, message }) => {
       const response: Response = await request
         .put("/user")
-        .set("Authorization", accessToken)
+        .set("Cookie", cookie)
         .send({
           [field]: value,
         })

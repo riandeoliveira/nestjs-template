@@ -23,11 +23,11 @@ describe("Renew User Refresh Token | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should renew a user refresh token", async () => {
-      const { accessToken, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
 
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Authorization", accessToken)
+        .set("Cookie", jwtCookie)
         .send({
           refresh_token: signUpUserBody.refreshToken.value,
         });
@@ -71,7 +71,7 @@ describe("Renew User Refresh Token | E2E Tests", () => {
     });
 
     it("should throw an error when the refresh token has already been used", async () => {
-      const { accessToken, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
 
       const personalRefreshToken: PersonalRefreshToken = await prisma.personalRefreshToken.update({
         where: {
@@ -85,7 +85,7 @@ describe("Renew User Refresh Token | E2E Tests", () => {
 
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Authorization", accessToken)
+        .set("Cookie", jwtCookie)
         .send({
           refresh_token: personalRefreshToken.value,
         });
@@ -104,18 +104,18 @@ describe("Renew User Refresh Token | E2E Tests", () => {
   });
 
   describe("Validations", () => {
-    let accessToken: string;
+    let cookie: string;
 
     beforeAll(async () => {
-      const { accessToken: token } = await commonTestsUtility.authenticate();
+      const { jwtCookie } = await commonTestsUtility.authenticate();
 
-      accessToken = token;
+      cookie = jwtCookie;
     });
 
     each(renewUserRefreshTokenFixture).it("$title", async ({ field, value, message }) => {
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Authorization", accessToken)
+        .set("Cookie", cookie)
         .send({
           [field]: value,
         })

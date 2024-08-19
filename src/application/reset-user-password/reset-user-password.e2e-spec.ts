@@ -25,13 +25,13 @@ describe("Reset User Password | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should reset the user password", async () => {
-      const { accessToken } = await commonTestsUtility.authenticate();
+      const { jwtCookie } = await commonTestsUtility.authenticate();
 
       const password: string = FakeData.strongPassword();
 
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Authorization", accessToken)
+        .set("Cookie", jwtCookie)
         .send({
           password,
           password_confirmation: password,
@@ -81,14 +81,14 @@ describe("Reset User Password | E2E Tests", () => {
     });
 
     it("Should throw an error when passwords are not equivalent", async () => {
-      const { accessToken } = await commonTestsUtility.authenticate();
+      const { jwtCookie } = await commonTestsUtility.authenticate();
 
       const firstPassword: string = FakeData.strongPassword();
       const secondPassword: string = FakeData.strongPassword();
 
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Authorization", accessToken)
+        .set("Cookie", jwtCookie)
         .send({
           password: firstPassword,
           password_confirmation: secondPassword,
@@ -108,18 +108,18 @@ describe("Reset User Password | E2E Tests", () => {
   });
 
   describe("Validations", () => {
-    let accessToken: string;
+    let cookie: string;
 
     beforeAll(async () => {
-      const { accessToken: token } = await commonTestsUtility.authenticate();
+      const { jwtCookie } = await commonTestsUtility.authenticate();
 
-      accessToken = token;
+      cookie = jwtCookie;
     });
 
     each(resetUserPasswordFixture).it("$title", async ({ field, value, message }) => {
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Authorization", accessToken)
+        .set("Cookie", cookie)
         .send({
           [field]: value,
         })

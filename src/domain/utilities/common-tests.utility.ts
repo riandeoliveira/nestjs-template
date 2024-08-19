@@ -9,8 +9,8 @@ import { ResponseMessages } from "../enums/response-messages.enum";
 import { ProblemDetailsType } from "../types/problem-details";
 
 type AuthenticateReturnType = {
-  accessToken: string;
   email: string;
+  jwtCookie: string;
   password: string;
   signUpUserBody: TokenDto;
 };
@@ -21,6 +21,17 @@ export class CommonTestsUtility {
     private readonly path: string,
   ) {}
 
+  private async requestBy(method: HttpMethodsKey, path: string): Promise<Response> {
+    const requestMethods = {
+      DELETE: await request.delete(path),
+      GET: await request.get(path),
+      POST: await request.post(path).send({}),
+      PUT: await request.put(path).send({}),
+    };
+
+    return requestMethods[method];
+  }
+
   public async authenticate(): Promise<AuthenticateReturnType> {
     const email: string = FakeData.email();
     const password: string = FakeData.strongPassword();
@@ -30,12 +41,13 @@ export class CommonTestsUtility {
       password,
     });
 
+    const jwtCookie: string = signUpUserResponse.get("Set-Cookie")[0];
+
     const signUpUserBody: TokenDto = signUpUserResponse.body;
-    const accessToken: string = `Bearer ${signUpUserBody.accessToken.value}`;
 
     return {
-      accessToken,
       email,
+      jwtCookie,
       password,
       signUpUserBody,
     };
@@ -80,16 +92,5 @@ export class CommonTestsUtility {
       expect(body.title).toEqual(ResponseMessages.TOO_MANY_REQUESTS);
       expect(body.status).toEqual(status);
     });
-  }
-
-  private async requestBy(method: HttpMethodsKey, path: string): Promise<Response> {
-    const requestMethods = {
-      DELETE: await request.delete(path),
-      GET: await request.get(path),
-      POST: await request.post(path).send({}),
-      PUT: await request.put(path).send({}),
-    };
-
-    return requestMethods[method];
   }
 }

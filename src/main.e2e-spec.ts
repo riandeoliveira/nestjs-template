@@ -1,5 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
+import cookieParser from "cookie-parser";
 import { default as apiRequest } from "supertest";
 import TestAgent from "supertest/lib/agent";
 import { AuthService } from "./infrastructure/modules/auth/auth.service";
@@ -20,6 +21,8 @@ describe("E2E Testing Setup", () => {
     }).compile();
 
     application = moduleFixture.createNestApplication();
+
+    application.use(cookieParser());
 
     request = apiRequest(application.getHttpServer());
 
