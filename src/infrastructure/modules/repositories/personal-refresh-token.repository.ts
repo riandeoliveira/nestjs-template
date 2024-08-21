@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PersonalRefreshToken } from "../../../domain/entities/personal-refresh-token.entity";
 import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
@@ -79,12 +79,18 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
     where: Prisma.PersonalRefreshTokenWhereUniqueInput,
     data: Partial<PersonalRefreshToken>,
   ): Promise<void> {
-    await this.prisma.personalRefreshToken.update({
-      where,
-      data: {
-        updatedAt: new Date(),
-        ...data,
-      },
-    });
+    const { id, ...rest } = data;
+
+    try {
+      await this.prisma.personalRefreshToken.update({
+        where,
+        data: {
+          updatedAt: new Date(),
+          ...rest,
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_UPDATE_ERROR);
+    }
   }
 }

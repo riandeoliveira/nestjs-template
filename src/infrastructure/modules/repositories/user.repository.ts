@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { User } from "../../../domain/entities/user.entity";
 import { ResponseMessages } from "../../../domain/enums/response-messages.enum";
@@ -79,12 +79,16 @@ export class UserRepository implements IUserRepository {
   public async update(where: Prisma.UserWhereUniqueInput, data: Partial<User>): Promise<void> {
     const { id, ...rest } = data;
 
-    await this.prisma.user.update({
-      where,
-      data: {
-        updatedAt: new Date(),
-        ...rest,
-      },
-    });
+    try {
+      await this.prisma.user.update({
+        where,
+        data: {
+          updatedAt: new Date(),
+          ...rest,
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.USER_UPDATE_ERROR);
+    }
   }
 }

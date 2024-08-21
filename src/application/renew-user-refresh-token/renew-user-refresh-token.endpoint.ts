@@ -1,15 +1,13 @@
-import { Body, Post } from "@nestjs/common";
+import { Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ApiEndpoint } from "../../infrastructure/decorators/api-endpoint.decorator";
 import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-responses.decorator";
 import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
-import { Authorize } from "../../infrastructure/decorators/authorize.decorator";
+import { Cookies } from "../../infrastructure/decorators/cookies.decorator";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
-import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
 import { RenewUserRefreshTokenUseCase } from "./renew-user-refresh-token.use-case";
 
 @ApiEndpoint("user")
-@Authorize()
 export class RenewUserRefreshTokenEndpoint {
   public constructor(private readonly useCase: RenewUserRefreshTokenUseCase) {}
 
@@ -25,11 +23,12 @@ export class RenewUserRefreshTokenEndpoint {
     "TOO_MANY_REQUESTS",
     "UNAUTHORIZED",
   ])
-  @ApiSuccessResponse("OK", RenewUserRefreshTokenResponse)
+  @ApiSuccessResponse("NO_CONTENT")
   @Post("refresh-token/renew")
   public async handle(
-    @Body() request: RenewUserRefreshTokenRequest,
-  ): Promise<RenewUserRefreshTokenResponse> {
-    return await this.useCase.execute(request);
+    @Cookies({ name: "refresh_token", type: RenewUserRefreshTokenRequest })
+    request: RenewUserRefreshTokenRequest,
+  ): Promise<void> {
+    await this.useCase.execute(request);
   }
 }

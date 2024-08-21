@@ -8,21 +8,16 @@ import { AuthService } from "../../infrastructure/modules/auth/auth.service";
 import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
 import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { RenewUserRefreshTokenRequest } from "./renew-user-refresh-token.request";
-import { RenewUserRefreshTokenResponse } from "./renew-user-refresh-token.response";
 
 @Injectable()
-export class RenewUserRefreshTokenUseCase
-  implements IUseCase<RenewUserRefreshTokenRequest, RenewUserRefreshTokenResponse>
-{
+export class RenewUserRefreshTokenUseCase implements IUseCase<RenewUserRefreshTokenRequest> {
   public constructor(
     private readonly authService: AuthService,
     private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async execute(
-    request: RenewUserRefreshTokenRequest,
-  ): Promise<RenewUserRefreshTokenResponse> {
+  public async execute(request: RenewUserRefreshTokenRequest): Promise<void> {
     await this.authService.validateTokenOrThrow(request.refreshToken);
 
     const user: User = await this.userRepository.findCurrentOrThrow();
@@ -52,7 +47,5 @@ export class RenewUserRefreshTokenUseCase
     });
 
     await this.personalRefreshTokenRepository.create(personalRefreshToken);
-
-    return tokenData;
   }
 }

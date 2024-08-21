@@ -5,11 +5,15 @@ import { IsRequired } from "../../infrastructure/decorators/is-required.decorato
 import { IsString } from "../../infrastructure/decorators/is-string.decorator";
 import { Trim } from "../../infrastructure/decorators/trim.decorator";
 
-export abstract class RenewUserRefreshTokenRequest {
+export class RenewUserRefreshTokenRequest {
   @ApiProperty("refresh_token", FakeData.accessToken())
   @HasExactLength(252, "REFRESH_TOKEN_LENGTH")
   @IsRequired("REFRESH_TOKEN_IS_REQUIRED")
   @IsString("REFRESH_TOKEN_IS_STRING")
   @Trim()
   public readonly refreshToken: string;
+
+  public constructor(refreshToken: string) {
+    this.refreshToken = refreshToken;
+  }
 }

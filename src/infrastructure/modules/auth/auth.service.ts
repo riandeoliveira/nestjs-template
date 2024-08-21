@@ -85,9 +85,11 @@ export class AuthService {
   }
 
   public async validateTokenOrThrow(token: string): Promise<boolean> {
-    await this.jwtService.verifyAsync(token, {
+    const payload: { userId: string } = await this.jwtService.verifyAsync(token, {
       secret: process.env.JWT_SECRET,
     });
+
+    this.request.currentUserId = payload.userId;
 
     return true;
   }
