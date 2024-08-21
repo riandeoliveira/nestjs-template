@@ -33,16 +33,18 @@ export class SignInUserUseCase implements IUseCase<SignInUserRequest, SignInUser
       throw new UnauthorizedException(ResponseMessages.INVALID_CREDENTIALS);
     }
 
-    const currentPersonalRefreshToken: PersonalRefreshToken =
-      await this.personalRefreshTokenRepository.findFirstOrThrow({
+    const currentPersonalRefreshToken: PersonalRefreshToken | null =
+      await this.personalRefreshTokenRepository.findFirst({
         userId: user.id,
         hasBeenUsed: false,
         deletedAt: null,
       });
 
-    await this.personalRefreshTokenRepository.update(currentPersonalRefreshToken, {
-      hasBeenUsed: true,
-    });
+    if (currentPersonalRefreshToken) {
+      await this.personalRefreshTokenRepository.update(currentPersonalRefreshToken, {
+        hasBeenUsed: true,
+      });
+    }
 
     const tokenData: TokenDto = await this.authService.generateTokenData(user.id);
 
