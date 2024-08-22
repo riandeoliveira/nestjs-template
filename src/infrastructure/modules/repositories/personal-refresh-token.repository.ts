@@ -10,7 +10,11 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
   public constructor(private readonly prisma: PrismaService) {}
 
   public async create(personalRefreshToken: PersonalRefreshToken): Promise<void> {
-    await this.prisma.personalRefreshToken.create({ data: personalRefreshToken });
+    try {
+      await this.prisma.personalRefreshToken.create({ data: personalRefreshToken });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_CREATE_ERROR);
+    }
   }
 
   public async findFirst(
@@ -52,27 +56,39 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
   }
 
   public async hardDelete(where: Prisma.PersonalRefreshTokenWhereUniqueInput): Promise<void> {
-    await this.prisma.personalRefreshToken.delete({
-      where,
-    });
+    try {
+      await this.prisma.personalRefreshToken.delete({
+        where,
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_DELETE_ERROR);
+    }
   }
 
   public async softDelete(where: Prisma.PersonalRefreshTokenWhereUniqueInput): Promise<void> {
-    await this.prisma.personalRefreshToken.update({
-      where,
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+    try {
+      await this.prisma.personalRefreshToken.update({
+        where,
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_DELETE_ERROR);
+    }
   }
 
   public async softDeleteMany(where: Prisma.PersonalRefreshTokenWhereInput): Promise<void> {
-    await this.prisma.personalRefreshToken.updateMany({
-      where,
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+    try {
+      await this.prisma.personalRefreshToken.updateMany({
+        where,
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_DELETE_ERROR);
+    }
   }
 
   public async update(

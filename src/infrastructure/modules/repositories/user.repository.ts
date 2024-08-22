@@ -14,7 +14,11 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   public async create(user: User): Promise<void> {
-    await this.prisma.user.create({ data: user });
+    try {
+      await this.prisma.user.create({ data: user });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.USER_CREATE_ERROR);
+    }
   }
 
   public async findCurrentOrThrow(): Promise<User> {
@@ -53,27 +57,39 @@ export class UserRepository implements IUserRepository {
   }
 
   public async hardDelete(where: Prisma.UserWhereUniqueInput): Promise<void> {
-    await this.prisma.user.delete({
-      where,
-    });
+    try {
+      await this.prisma.user.delete({
+        where,
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.USER_DELETE_ERROR);
+    }
   }
 
   public async softDelete(where: Prisma.UserWhereUniqueInput): Promise<void> {
-    await this.prisma.user.update({
-      where,
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+    try {
+      await this.prisma.user.update({
+        where,
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.USER_DELETE_ERROR);
+    }
   }
 
   public async softDeleteMany(where: Prisma.UserWhereInput): Promise<void> {
-    await this.prisma.user.updateMany({
-      where,
-      data: {
-        deletedAt: new Date(),
-      },
-    });
+    try {
+      await this.prisma.user.updateMany({
+        where,
+        data: {
+          deletedAt: new Date(),
+        },
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.USER_DELETE_ERROR);
+    }
   }
 
   public async update(where: Prisma.UserWhereUniqueInput, data: Partial<User>): Promise<void> {

@@ -19,12 +19,14 @@ export enum ResponseMessages {
   PASSWORD_IS_STRING = "The 'password' must be a string.",
   PASSWORD_IS_STRONG = "The 'password' must have at least: one lowercase letter, one uppercase letter, one number, and one symbol.",
   PASSWORDS_ARE_EQUIVALENT = "The 'passwords' must be equivalent.",
+  PERSONAL_REFRESH_TOKEN_CREATE_ERROR = "An error occurred while creating the personal refresh token. Please try again later.",
+  PERSONAL_REFRESH_TOKEN_DELETE_ERROR = "An error occurred while deleting the personal refresh token. Please try again later.",
   PERSONAL_REFRESH_TOKEN_NOT_FOUND = "Personal refresh token not found.",
   PERSONAL_REFRESH_TOKEN_UPDATE_ERROR = "An error occurred while updating the personal refresh token. Please try again later.",
 
-  REFRESH_TOKEN_LENGTH = "The 'refresh token' must have exactly 252 characters.",
   REFRESH_TOKEN_IS_REQUIRED = "The 'refresh token' must be provided.",
   REFRESH_TOKEN_IS_STRING = "The 'refresh token' must be a string.",
+  REFRESH_TOKEN_LENGTH = "The 'refresh token' must have exactly 252 characters.",
   REQUEST_IS_EMPTY = "At least one field must be provided.",
 
   TOO_MANY_REQUESTS = "Too many requests. Please try again later.",
@@ -32,6 +34,8 @@ export enum ResponseMessages {
   UNAUTHORIZED_OPERATION = "You do not have permission to perform this action.",
   UNKNOWN_ERROR = "An unknown error has occurred. Please try again later.",
 
+  USER_CREATE_ERROR = "An error occurred while creating the user. Please try again later.",
+  USER_DELETE_ERROR = "An error occurred while deleting the user. Please try again later.",
   USER_NOT_FOUND = "User not found.",
   USER_UPDATE_ERROR = "An error occurred while updating the user. Please try again later.",
 }
