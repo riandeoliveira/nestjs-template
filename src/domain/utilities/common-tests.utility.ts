@@ -3,16 +3,14 @@ import { FakeData } from "../../infrastructure/abstractions/fake-data.abstractio
 import { request } from "../../main.e2e-spec";
 import { MAXIMUM_REQUESTS_ALLOWED_PER_TTL, PROBLEM_DETAILS_URI } from "../constants";
 import { HttpResponses } from "../constants/http-responses";
-import { TokenDto } from "../dtos/token.dto";
 import { HttpMethodsKey } from "../enums/http-methods.enum";
 import { ResponseMessages } from "../enums/response-messages.enum";
 import { ProblemDetailsType } from "../types/problem-details";
 
 type AuthenticateReturnType = {
   email: string;
-  jwtCookie: string;
+  jwtCookies: string[];
   password: string;
-  signUpUserBody: TokenDto;
 };
 
 export class CommonTestsUtility {
@@ -41,15 +39,12 @@ export class CommonTestsUtility {
       password,
     });
 
-    const jwtCookie: string = signUpUserResponse.get("Set-Cookie")[0];
-
-    const signUpUserBody: TokenDto = signUpUserResponse.body;
+    const jwtCookies: string[] = signUpUserResponse.get("Set-Cookie");
 
     return {
       email,
-      jwtCookie,
+      jwtCookies,
       password,
-      signUpUserBody,
     };
   }
 
@@ -92,5 +87,13 @@ export class CommonTestsUtility {
       expect(body.title).toEqual(ResponseMessages.TOO_MANY_REQUESTS);
       expect(body.status).toEqual(status);
     });
+  }
+
+  public getJwtTokenFromCookie(cookie: string): string {
+    return cookie.split(";")[0].split("=")[1];
+  }
+
+  public getJwtCookies(response: Response): string[] {
+    return response.get("Set-Cookie");
   }
 }

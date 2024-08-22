@@ -4,12 +4,6 @@ import { FakeData } from "../../infrastructure/abstractions/fake-data.abstractio
 export const renewUserRefreshTokenFixture = [
   {
     field: "refresh_token",
-    title: "Should be a string",
-    value: 2000,
-    message: ResponseMessages.REFRESH_TOKEN_IS_STRING,
-  },
-  {
-    field: "refresh_token",
     title: "Should be required",
     value: "",
     message: ResponseMessages.REFRESH_TOKEN_IS_REQUIRED,

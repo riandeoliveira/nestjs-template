@@ -1,4 +1,5 @@
 {
+  "bail": true,
   "moduleFileExtensions": [
     "js",
     "json",

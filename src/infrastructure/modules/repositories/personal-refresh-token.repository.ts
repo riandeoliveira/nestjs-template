@@ -30,8 +30,9 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
   ): Promise<PersonalRefreshToken> {
     const personalRefreshToken: PersonalRefreshToken | null = await this.findFirst(where);
 
-    if (!personalRefreshToken)
+    if (!personalRefreshToken) {
       throw new NotFoundException(ResponseMessages.PERSONAL_REFRESH_TOKEN_NOT_FOUND);
+    }
 
     return personalRefreshToken;
   }
@@ -39,9 +40,13 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
   public async findOne(
     where: Prisma.PersonalRefreshTokenWhereUniqueInput,
   ): Promise<PersonalRefreshToken | null> {
-    return await this.prisma.personalRefreshToken.findUnique({
-      where,
-    });
+    try {
+      return await this.prisma.personalRefreshToken.findUnique({
+        where,
+      });
+    } catch {
+      throw new InternalServerErrorException(ResponseMessages.PERSONAL_REFRESH_TOKEN_READ_ERROR);
+    }
   }
 
   public async findOneOrThrow(
@@ -49,8 +54,9 @@ export class PersonalRefreshTokenRepository implements IPersonalRefreshTokenRepo
   ): Promise<PersonalRefreshToken> {
     const personalRefreshToken: PersonalRefreshToken | null = await this.findOne(where);
 
-    if (!personalRefreshToken)
+    if (!personalRefreshToken) {
       throw new NotFoundException(ResponseMessages.PERSONAL_REFRESH_TOKEN_NOT_FOUND);
+    }
 
     return personalRefreshToken;
   }

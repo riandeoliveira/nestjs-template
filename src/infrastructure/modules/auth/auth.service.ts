@@ -1,4 +1,4 @@
-import { Inject, Injectable, Scope } from "@nestjs/common";
+import { Inject } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
@@ -9,10 +9,11 @@ import {
 } from "../../../domain/constants";
 import { TokenDto } from "../../../domain/dtos/token.dto";
 import { IRequest } from "../../../domain/interfaces/request.interface";
+import { CurrentUserIdProvider } from "../providers/current-user-id.provider";
 
-@Injectable({ scope: Scope.REQUEST })
 export class AuthService {
   public constructor(
+    private readonly currentUserIdProvider: CurrentUserIdProvider,
     private readonly jwtService: JwtService,
 
     @Inject(REQUEST)
@@ -80,17 +81,13 @@ export class AuthService {
     };
   }
 
-  public getCurrentUserId(): string {
-    return this.request.currentUserId;
-  }
-
-  public async validateTokenOrThrow(token: string): Promise<boolean> {
+  public async validateTokenOrThrow(token: string): Promise<{ userId: string }> {
     const payload: { userId: string } = await this.jwtService.verifyAsync(token, {
       secret: process.env.JWT_SECRET,
     });
 
-    this.request.currentUserId = payload.userId;
+    this.currentUserIdProvider.set(payload.userId);
 
-    return true;
+    return payload;
   }
 }

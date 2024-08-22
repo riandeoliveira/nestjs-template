@@ -11,9 +11,9 @@ describe("Verify Current User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should verify the authenticated user", async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
-      const response: Response = await request.get("/user/verify").set("Cookie", jwtCookie);
+      const response: Response = await request.get("/user/verify").set("Cookie", jwtCookies);
 
       expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
     });

@@ -1,19 +1,12 @@
-import { PersonalRefreshToken, User } from "@prisma/client";
-import { isUUID } from "class-validator";
 import each from "jest-each";
 import { Response } from "supertest";
-import {
-  ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
-  PROBLEM_DETAILS_URI,
-  REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
-} from "../../domain/constants";
+import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { TokenDto } from "../../domain/dtos/token.dto";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
-import { authService, prisma, request } from "../../main.e2e-spec";
+import { authService, request } from "../../main.e2e-spec";
 import { signUpUserFixture } from "./sign-up-user.fixture";
 
 const commonTestsUtility = new CommonTestsUtility("POST", "/user/sign-up");
@@ -28,42 +21,23 @@ describe("Sign Up User | E2E Tests", () => {
         password: FakeData.strongPassword(),
       });
 
-      const body: TokenDto = response.body;
+      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
 
-      const user: User | null = await prisma.user.findUnique({
-        where: {
-          id: body.userId,
-          deletedAt: null,
-        },
-      });
-
-      const personalRefreshToken: PersonalRefreshToken | null =
-        await prisma.personalRefreshToken.findUnique({
-          where: {
-            value: body.refreshToken.value,
-            deletedAt: null,
-          },
-        });
-
-      const isAccessTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.accessToken.value,
+      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(
+        cookies ? cookies[0] : "",
       );
 
-      const isRefreshTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.refreshToken.value,
+      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(
+        cookies ? cookies[1] : "",
       );
+
+      const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
+      const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
       expect(response.statusCode).toEqual(HttpResponses.CREATED.status);
 
-      expect(isUUID(body.userId)).toEqual(true);
-      expect(user).not.toBeNull();
-
-      expect(body.accessToken.expiresIn).toEqual(ACCESS_TOKEN_EXPIRATION_IN_SECONDS);
       expect(isAccessTokenValid).toEqual(true);
-
-      expect(body.refreshToken.expiresIn).toEqual(REFRESH_TOKEN_EXPIRATION_IN_SECONDS);
       expect(isRefreshTokenValid).toEqual(true);
-      expect(personalRefreshToken).not.toBeNull();
     });
 
     it("Should throw an error when trying to sign up a user with an already registered email", async () => {

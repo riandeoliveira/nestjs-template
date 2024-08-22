@@ -1,14 +1,7 @@
-import { PersonalRefreshToken, User } from "@prisma/client";
-import { isUUID } from "class-validator";
 import each from "jest-each";
 import { Response } from "supertest";
-import {
-  ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
-  PROBLEM_DETAILS_URI,
-  REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
-} from "../../domain/constants";
+import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { TokenDto } from "../../domain/dtos/token.dto";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
@@ -19,63 +12,37 @@ const commonTestsUtility = new CommonTestsUtility("POST", "/user/refresh-token/r
 
 describe("Renew User Refresh Token | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
     commonTestsUtility.includeRateLimitTest();
 
     it("Should renew a user refresh token", async () => {
-      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Cookie", jwtCookie)
-        .send({
-          refresh_token: signUpUserBody.refreshToken.value,
-        });
+        .set("Cookie", jwtCookies[1]);
 
-      const body: TokenDto = response.body;
+      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
 
-      const user: User | null = await prisma.user.findUnique({
-        where: {
-          id: body.userId,
-          deletedAt: null,
-        },
-      });
+      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(cookies[0]);
+      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(cookies[1]);
 
-      const personalRefreshToken: PersonalRefreshToken | null =
-        await prisma.personalRefreshToken.findUnique({
-          where: {
-            value: body.refreshToken.value,
-            deletedAt: null,
-          },
-        });
+      const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
+      const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
-      const isAccessTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.accessToken.value,
-      );
+      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
 
-      const isRefreshTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.refreshToken.value,
-      );
-
-      expect(response.statusCode).toEqual(HttpResponses.OK.status);
-
-      expect(isUUID(body.userId)).toEqual(true);
-      expect(user).not.toBeNull();
-
-      expect(body.accessToken.expiresIn).toEqual(ACCESS_TOKEN_EXPIRATION_IN_SECONDS);
       expect(isAccessTokenValid).toEqual(true);
-
-      expect(body.refreshToken.expiresIn).toEqual(REFRESH_TOKEN_EXPIRATION_IN_SECONDS);
       expect(isRefreshTokenValid).toEqual(true);
-      expect(personalRefreshToken).not.toBeNull();
     });
 
     it("should throw an error when the refresh token has already been used", async () => {
-      const { jwtCookie, signUpUserBody } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
-      const personalRefreshToken: PersonalRefreshToken = await prisma.personalRefreshToken.update({
+      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[1]);
+
+      await prisma.personalRefreshToken.update({
         where: {
-          value: signUpUserBody.refreshToken.value,
+          value: refreshToken,
         },
         data: {
           hasBeenUsed: true,
@@ -85,10 +52,7 @@ describe("Renew User Refresh Token | E2E Tests", () => {
 
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Cookie", jwtCookie)
-        .send({
-          refresh_token: personalRefreshToken.value,
-        });
+        .set("Cookie", jwtCookies[1]);
 
       const { status, message } = HttpResponses.UNAUTHORIZED;
 
@@ -107,18 +71,20 @@ describe("Renew User Refresh Token | E2E Tests", () => {
     let cookie: string;
 
     beforeAll(async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
-      cookie = jwtCookie;
+      cookie = jwtCookies[1];
     });
 
     each(renewUserRefreshTokenFixture).it("$title", async ({ field, value, message }) => {
+      const cookieFixture: string = cookie.replace(
+        new RegExp(`${field}=[^;]+`),
+        `${field}=${value}`,
+      );
+
       const response: Response = await request
         .post("/user/refresh-token/renew")
-        .set("Cookie", cookie)
-        .send({
-          [field]: value,
-        })
+        .set("Cookie", value === "" ? "" : cookieFixture)
         .retry();
 
       const { status, message: detail } = HttpResponses.BAD_REQUEST;

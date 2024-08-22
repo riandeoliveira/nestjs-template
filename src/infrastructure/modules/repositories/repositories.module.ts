@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
-import { AuthModule } from "../auth/auth.module";
 import { PrismaModule } from "../prisma/prisma.module";
+import { ProvidersModule } from "../providers/providers.module";
 import { PersonalRefreshTokenRepository } from "./personal-refresh-token.repository";
 import { UserRepository } from "./user.repository";
 
 @Module({
-  imports: [AuthModule, PrismaModule],
+  imports: [PrismaModule, ProvidersModule],
   providers: [PersonalRefreshTokenRepository, UserRepository],
   exports: [PersonalRefreshTokenRepository, UserRepository],
 })

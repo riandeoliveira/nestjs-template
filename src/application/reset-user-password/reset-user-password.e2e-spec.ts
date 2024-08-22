@@ -1,20 +1,12 @@
-import { PersonalRefreshToken, User } from "@prisma/client";
-import { isUUID } from "class-validator";
 import each from "jest-each";
 import { Response } from "supertest";
-import {
-  ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
-  PROBLEM_DETAILS_URI,
-  REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
-} from "../../domain/constants";
+import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { TokenDto } from "../../domain/dtos/token.dto";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
-import { PasswordUtility } from "../../domain/utilities/password.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
-import { authService, prisma, request } from "../../main.e2e-spec";
+import { authService, request } from "../../main.e2e-spec";
 import { resetUserPasswordFixture } from "./reset-user-password.fixture";
 
 const commonTestsUtility = new CommonTestsUtility("POST", "/user/reset-password");
@@ -25,70 +17,46 @@ describe("Reset User Password | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should reset the user password", async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
       const password: string = FakeData.strongPassword();
 
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Cookie", jwtCookie)
+        .set("Cookie", jwtCookies)
         .send({
           password,
           password_confirmation: password,
         });
 
-      const body: TokenDto = response.body;
+      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
 
-      const user: User | null = await prisma.user.findUnique({
-        where: {
-          id: body.userId,
-          deletedAt: null,
-        },
-      });
-
-      const isPasswordValid: boolean = await PasswordUtility.verify(
-        password,
-        user ? user.password : "",
+      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(
+        cookies ? cookies[0] : "",
       );
 
-      const personalRefreshToken: PersonalRefreshToken | null =
-        await prisma.personalRefreshToken.findUnique({
-          where: {
-            value: body.refreshToken.value,
-            deletedAt: null,
-          },
-        });
-
-      const isAccessTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.accessToken.value,
+      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(
+        cookies ? cookies[1] : "",
       );
 
-      const isRefreshTokenValid: boolean = await authService.validateTokenOrThrow(
-        body.refreshToken.value,
-      );
+      const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
+      const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
-      expect(response.statusCode).toEqual(HttpResponses.OK.status);
+      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
 
-      expect(isUUID(body.userId)).toEqual(true);
-      expect(body.accessToken.expiresIn).toEqual(ACCESS_TOKEN_EXPIRATION_IN_SECONDS);
-      expect(body.refreshToken.expiresIn).toEqual(REFRESH_TOKEN_EXPIRATION_IN_SECONDS);
-
-      expect(user).not.toBeNull();
-      expect(isPasswordValid).toEqual(true);
-      expect(personalRefreshToken).not.toBeNull();
       expect(isAccessTokenValid).toEqual(true);
       expect(isRefreshTokenValid).toEqual(true);
     });
 
     it("Should throw an error when passwords are not equivalent", async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
       const firstPassword: string = FakeData.strongPassword();
       const secondPassword: string = FakeData.strongPassword();
 
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Cookie", jwtCookie)
+        .set("Cookie", jwtCookies)
         .send({
           password: firstPassword,
           password_confirmation: secondPassword,
@@ -108,18 +76,18 @@ describe("Reset User Password | E2E Tests", () => {
   });
 
   describe("Validations", () => {
-    let cookie: string;
+    let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
-      cookie = jwtCookie;
+      cookies = jwtCookies;
     });
 
     each(resetUserPasswordFixture).it("$title", async ({ field, value, message }) => {
       const response: Response = await request
         .post("/user/reset-password")
-        .set("Cookie", cookie)
+        .set("Cookie", cookies)
         .send({
           [field]: value,
         })

@@ -7,7 +7,7 @@ import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
 import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
-import { prisma, request } from "../../main.e2e-spec";
+import { authService, prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
 const commonTestsUtility = new CommonTestsUtility("PUT", "/user");
@@ -18,17 +18,20 @@ describe("Update User | E2E Tests", () => {
     commonTestsUtility.includeRateLimitTest();
 
     it("Should update a user", async () => {
-      const { jwtCookie, signUpUserBody, email, password } =
-        await commonTestsUtility.authenticate();
+      const { jwtCookies, email, password } = await commonTestsUtility.authenticate();
 
-      const response: Response = await request.put("/user").set("Cookie", jwtCookie).send({
+      const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
         email: FakeData.email(),
         password: FakeData.strongPassword(),
       });
 
+      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[0]);
+
+      const { userId } = await authService.validateTokenOrThrow(accessToken);
+
       const user: User | null = await prisma.user.findUnique({
         where: {
-          id: signUpUserBody.userId,
+          id: userId,
           deletedAt: null,
         },
       });
@@ -48,9 +51,9 @@ describe("Update User | E2E Tests", () => {
       password: FakeData.strongPassword(),
     });
 
-    const { jwtCookie } = await commonTestsUtility.authenticate();
+    const { jwtCookies } = await commonTestsUtility.authenticate();
 
-    const response: Response = await request.put("/user").set("Cookie", jwtCookie).send({
+    const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
       email: firstUserEmail,
     });
 
@@ -67,18 +70,18 @@ describe("Update User | E2E Tests", () => {
   });
 
   describe("Validations", () => {
-    let cookie: string;
+    let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookie } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await commonTestsUtility.authenticate();
 
-      cookie = jwtCookie;
+      cookies = jwtCookies;
     });
 
     each(updateUserFixture).it("$title", async ({ field, value, message }) => {
       const response: Response = await request
         .put("/user")
-        .set("Cookie", cookie)
+        .set("Cookie", cookies)
         .send({
           [field]: value,
         })
