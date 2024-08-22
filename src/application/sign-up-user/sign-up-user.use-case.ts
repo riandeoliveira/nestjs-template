@@ -9,17 +9,16 @@ import { AuthService } from "../../infrastructure/modules/auth/auth.service";
 import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
 import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { SignUpUserRequest } from "./sign-up-user.request";
-import { SignUpUserResponse } from "./sign-up-user.response";
 
 @Injectable()
-export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUserResponse> {
+export class SignUpUserUseCase implements IUseCase<SignUpUserRequest> {
   public constructor(
     private readonly authService: AuthService,
     private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async execute(request: SignUpUserRequest): Promise<SignUpUserResponse> {
+  public async execute(request: SignUpUserRequest): Promise<void> {
     const userAlreadyExists: User | null = await this.userRepository.findOne({
       email: request.email,
     });
@@ -46,7 +45,5 @@ export class SignUpUserUseCase implements IUseCase<SignUpUserRequest, SignUpUser
     });
 
     await this.personalRefreshTokenRepository.create(personalRefreshToken);
-
-    return tokenData;
   }
 }

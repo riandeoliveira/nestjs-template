@@ -4,7 +4,6 @@ import { ApiEndpoint } from "../../infrastructure/decorators/api-endpoint.decora
 import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-responses.decorator";
 import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
 import { SignInUserRequest } from "./sign-in-user.request";
-import { SignInUserResponse } from "./sign-in-user.response";
 import { SignInUserUseCase } from "./sign-in-user.use-case";
 
 @ApiEndpoint("user")
@@ -23,9 +22,9 @@ export class SignInUserEndpoint {
     "TOO_MANY_REQUESTS",
     "UNAUTHORIZED",
   ])
-  @ApiSuccessResponse("OK", SignInUserResponse)
+  @ApiSuccessResponse("NO_CONTENT")
   @Post("sign-in")
-  public async handle(@Body() request: SignInUserRequest): Promise<SignInUserResponse> {
-    return await this.useCase.execute(request);
+  public async handle(@Body() request: SignInUserRequest): Promise<void> {
+    await this.useCase.execute(request);
   }
 }

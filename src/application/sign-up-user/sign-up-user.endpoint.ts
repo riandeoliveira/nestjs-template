@@ -4,7 +4,6 @@ import { ApiEndpoint } from "../../infrastructure/decorators/api-endpoint.decora
 import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-responses.decorator";
 import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
 import { SignUpUserRequest } from "./sign-up-user.request";
-import { SignUpUserResponse } from "./sign-up-user.response";
 import { SignUpUserUseCase } from "./sign-up-user.use-case";
 
 @ApiEndpoint("user")
@@ -17,9 +16,9 @@ export class SignUpUserEndpoint {
     tags: ["User"],
   })
   @ApiErrorResponses(["BAD_REQUEST", "CONFLICT", "INTERNAL_SERVER_ERROR", "TOO_MANY_REQUESTS"])
-  @ApiSuccessResponse("CREATED", SignUpUserResponse)
+  @ApiSuccessResponse("CREATED")
   @Post("sign-up")
-  public async handle(@Body() request: SignUpUserRequest): Promise<SignUpUserResponse> {
-    return await this.useCase.execute(request);
+  public async handle(@Body() request: SignUpUserRequest): Promise<void> {
+    await this.useCase.execute(request);
   }
 }

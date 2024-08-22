@@ -5,7 +5,6 @@ import { ApiErrorResponses } from "../../infrastructure/decorators/api-error-res
 import { ApiSuccessResponse } from "../../infrastructure/decorators/api-success.decorator";
 import { Authorize } from "../../infrastructure/decorators/authorize.decorator";
 import { ResetUserPasswordRequest } from "./reset-user-password.request";
-import { ResetUserPasswordResponse } from "./reset-user-password.response";
 import { ResetUserPasswordUseCase } from "./reset-user-password.use-case";
 
 @ApiEndpoint("user")
@@ -25,11 +24,9 @@ export class ResetUserPasswordEndpoint {
     "TOO_MANY_REQUESTS",
     "UNAUTHORIZED",
   ])
-  @ApiSuccessResponse("OK", ResetUserPasswordResponse)
+  @ApiSuccessResponse("NO_CONTENT")
   @Post("reset-password")
-  public async handle(
-    @Body() request: ResetUserPasswordRequest,
-  ): Promise<ResetUserPasswordResponse> {
-    return await this.useCase.execute(request);
+  public async handle(@Body() request: ResetUserPasswordRequest): Promise<void> {
+    await this.useCase.execute(request);
   }
 }

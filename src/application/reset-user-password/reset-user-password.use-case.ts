@@ -9,19 +9,16 @@ import { AuthService } from "../../infrastructure/modules/auth/auth.service";
 import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
 import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
 import { ResetUserPasswordRequest } from "./reset-user-password.request";
-import { ResetUserPasswordResponse } from "./reset-user-password.response";
 
 @Injectable()
-export class ResetUserPasswordUseCase
-  implements IUseCase<ResetUserPasswordRequest, ResetUserPasswordResponse>
-{
+export class ResetUserPasswordUseCase implements IUseCase<ResetUserPasswordRequest> {
   public constructor(
     private readonly authService: AuthService,
     private readonly personalRefreshTokenRepository: PersonalRefreshTokenRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async execute(request: ResetUserPasswordRequest): Promise<ResetUserPasswordResponse> {
+  public async execute(request: ResetUserPasswordRequest): Promise<void> {
     if (request.password !== request.passwordConfirmation) {
       throw new BadRequestException(ResponseMessages.PASSWORDS_ARE_EQUIVALENT);
     }
@@ -62,7 +59,5 @@ export class ResetUserPasswordUseCase
     });
 
     await this.personalRefreshTokenRepository.create(personalRefreshToken);
-
-    return tokenData;
   }
 }
