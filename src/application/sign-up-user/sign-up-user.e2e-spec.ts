@@ -4,16 +4,19 @@ import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { authService, request } from "../../main.e2e-spec";
 import { signUpUserFixture } from "./sign-up-user.fixture";
 
-const commonTestsUtility = new CommonTestsUtility("POST", "/user/sign-up");
+const testsUtility = new TestsUtility({
+  method: "POST",
+  path: "/user/sign-up",
+});
 
 describe("Sign Up User | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should sign up a user", async () => {
       const response: Response = await request.post("/user/sign-up").send({
@@ -21,15 +24,10 @@ describe("Sign Up User | E2E Tests", () => {
         password: FakeData.strongPassword(),
       });
 
-      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
+      const cookies = response.get("Set-Cookie") as string[];
 
-      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(
-        cookies ? cookies[0] : "",
-      );
-
-      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(
-        cookies ? cookies[1] : "",
-      );
+      const accessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
+      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
 
       const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
       const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));

@@ -4,20 +4,23 @@ import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { authService, request } from "../../main.e2e-spec";
 import { resetUserPasswordFixture } from "./reset-user-password.fixture";
 
-const commonTestsUtility = new CommonTestsUtility("POST", "/user/reset-password");
+const testsUtility = new TestsUtility({
+  method: "POST",
+  path: "/user/reset-password",
+});
 
 describe("Reset User Password | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeAuthenticationTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should reset the user password", async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
       const password: string = FakeData.strongPassword();
 
@@ -29,15 +32,10 @@ describe("Reset User Password | E2E Tests", () => {
           password_confirmation: password,
         });
 
-      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
+      const cookies = response.get("Set-Cookie") as string[];
 
-      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(
-        cookies ? cookies[0] : "",
-      );
-
-      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(
-        cookies ? cookies[1] : "",
-      );
+      const accessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
+      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
 
       const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
       const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
@@ -49,7 +47,7 @@ describe("Reset User Password | E2E Tests", () => {
     });
 
     it("Should throw an error when passwords are not equivalent", async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
       const firstPassword: string = FakeData.strongPassword();
       const secondPassword: string = FakeData.strongPassword();
@@ -79,7 +77,7 @@ describe("Reset User Password | E2E Tests", () => {
     let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
       cookies = jwtCookies;
     });

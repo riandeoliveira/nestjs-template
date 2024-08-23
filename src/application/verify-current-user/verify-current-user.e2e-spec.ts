@@ -1,17 +1,20 @@
 import { Response } from "supertest";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { request } from "../../main.e2e-spec";
 
-const commonTestsUtility = new CommonTestsUtility("GET", "/user/verify");
+const testsUtility = new TestsUtility({
+  method: "GET",
+  path: "/user/verify",
+});
 
 describe("Verify Current User | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeAuthenticationTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should verify the authenticated user", async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
       const response: Response = await request.get("/user/verify").set("Cookie", jwtCookies);
 

@@ -7,17 +7,23 @@ import { HttpMethodsKey } from "../enums/http-methods.enum";
 import { ResponseMessages } from "../enums/response-messages.enum";
 import { ProblemDetailsType } from "../types/problem-details";
 
+type TestsDataType = {
+  method: HttpMethodsKey;
+  path: string;
+};
+
 type AuthenticateReturnType = {
   email: string;
   jwtCookies: string[];
   password: string;
 };
 
-export class CommonTestsUtility {
-  public constructor(
-    private readonly method: HttpMethodsKey,
-    private readonly path: string,
-  ) {}
+export class TestsUtility {
+  public constructor(private readonly data: TestsDataType) {}
+
+  private getJwtTokenFromCookie(cookie: string): string {
+    return cookie.split(";")[0].split("=")[1];
+  }
 
   private async requestBy(method: HttpMethodsKey, path: string): Promise<Response> {
     const requestMethods = {
@@ -34,12 +40,12 @@ export class CommonTestsUtility {
     const email: string = FakeData.email();
     const password: string = FakeData.strongPassword();
 
-    const signUpUserResponse: Response = await request.post("/user/sign-up").send({
+    const response: Response = await request.post("/user/sign-up").send({
       email,
       password,
     });
 
-    const jwtCookies: string[] = signUpUserResponse.get("Set-Cookie");
+    const jwtCookies: string[] = response.get("Set-Cookie");
 
     return {
       email,
@@ -50,7 +56,7 @@ export class CommonTestsUtility {
 
   public includeAuthenticationTest(): void {
     it("Should throw an error when trying to access without being authenticated", async () => {
-      const response: Response = await this.requestBy(this.method, this.path);
+      const response: Response = await this.requestBy(this.data.method, this.data.path);
 
       const { status, message } = HttpResponses.UNAUTHORIZED;
 
@@ -70,7 +76,7 @@ export class CommonTestsUtility {
       const responses: Response[] = [];
 
       for (let i = 0; i < MAXIMUM_REQUESTS_ALLOWED_PER_TTL + 1; i++) {
-        const response: Response = await this.requestBy(this.method, this.path);
+        const response: Response = await this.requestBy(this.data.method, this.data.path);
 
         responses.push(response);
       }
@@ -89,11 +95,11 @@ export class CommonTestsUtility {
     });
   }
 
-  public getJwtTokenFromCookie(cookie: string): string {
-    return cookie.split(";")[0].split("=")[1];
+  public getAccessTokenFromCookies(cookies: string[]): string {
+    return this.getJwtTokenFromCookie(cookies[0]);
   }
 
-  public getJwtCookies(response: Response): string[] {
-    return response.get("Set-Cookie");
+  public getRefreshTokenFromCookies(cookies: string[]): string {
+    return this.getJwtTokenFromCookie(cookies[1]);
   }
 }

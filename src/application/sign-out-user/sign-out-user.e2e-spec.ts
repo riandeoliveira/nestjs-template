@@ -1,20 +1,23 @@
 import { PersonalRefreshToken } from "@prisma/client";
 import { Response } from "supertest";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { prisma, request } from "../../main.e2e-spec";
 
-const commonTestsUtility = new CommonTestsUtility("POST", "/user/sign-out");
+const testsUtility = new TestsUtility({
+  method: "POST",
+  path: "/user/sign-out",
+});
 
 describe("Sign Out User | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeAuthenticationTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should sign out a user", async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
-      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[1]);
+      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(jwtCookies);
 
       const personalRefreshTokenBeforeRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({
@@ -25,10 +28,10 @@ describe("Sign Out User | E2E Tests", () => {
 
       const response: Response = await request.post("/user/sign-out").set("Cookie", jwtCookies);
 
-      const cookies: string[] = commonTestsUtility.getJwtCookies(response);
+      const cookies = response.get("Set-Cookie") as string[];
 
-      const emptyAccessToken: string = commonTestsUtility.getJwtTokenFromCookie(cookies[0]);
-      const emptyRefreshToken: string = commonTestsUtility.getJwtTokenFromCookie(cookies[1]);
+      const emptyAccessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
+      const emptyRefreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
 
       const personalRefreshTokenAfterRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({

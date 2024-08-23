@@ -5,27 +5,30 @@ import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses } from "../../domain/constants/http-responses";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
-const commonTestsUtility = new CommonTestsUtility("PUT", "/user");
+const testsUtility = new TestsUtility({
+  method: "PUT",
+  path: "/user",
+});
 
 describe("Update User | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeAuthenticationTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should update a user", async () => {
-      const { jwtCookies, email, password } = await commonTestsUtility.authenticate();
+      const { jwtCookies, email, password } = await testsUtility.authenticate();
 
       const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
         email: FakeData.email(),
         password: FakeData.strongPassword(),
       });
 
-      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[0]);
+      const accessToken: string = testsUtility.getAccessTokenFromCookies(jwtCookies);
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
@@ -51,7 +54,7 @@ describe("Update User | E2E Tests", () => {
       password: FakeData.strongPassword(),
     });
 
-    const { jwtCookies } = await commonTestsUtility.authenticate();
+    const { jwtCookies } = await testsUtility.authenticate();
 
     const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
       email: firstUserEmail,
@@ -73,7 +76,7 @@ describe("Update User | E2E Tests", () => {
     let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
       cookies = jwtCookies;
     });

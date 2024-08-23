@@ -1,21 +1,24 @@
 import { PersonalRefreshToken, User } from "@prisma/client";
 import { Response } from "supertest";
 import { HttpResponses } from "../../domain/constants/http-responses";
-import { CommonTestsUtility } from "../../domain/utilities/common-tests.utility";
+import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 
-const commonTestsUtility = new CommonTestsUtility("DELETE", "/user");
+const testsUtility = new TestsUtility({
+  method: "DELETE",
+  path: "/user",
+});
 
 describe("Delete User | E2E Tests", () => {
   describe("Use Cases", () => {
-    commonTestsUtility.includeAuthenticationTest();
-    commonTestsUtility.includeRateLimitTest();
+    testsUtility.includeAuthenticationTest();
+    testsUtility.includeRateLimitTest();
 
     it("Should delete the authenticated user", async () => {
-      const { jwtCookies } = await commonTestsUtility.authenticate();
+      const { jwtCookies } = await testsUtility.authenticate();
 
-      const accessToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[0]);
-      const refreshToken: string = commonTestsUtility.getJwtTokenFromCookie(jwtCookies[1]);
+      const accessToken: string = testsUtility.getAccessTokenFromCookies(jwtCookies);
+      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(jwtCookies);
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
