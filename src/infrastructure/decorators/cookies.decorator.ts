@@ -1,6 +1,6 @@
 import { BadRequestException, ExecutionContext, Type, createParamDecorator } from "@nestjs/common";
 import { ValidationError, validateOrReject } from "class-validator";
-import { IRequest } from "../../domain/interfaces/request.interface";
+import { Request } from "express";
 
 type CookieData = {
   name: string;
@@ -8,7 +8,7 @@ type CookieData = {
 };
 
 export const Cookies = createParamDecorator(async (data: CookieData, context: ExecutionContext) => {
-  const request: IRequest = context.switchToHttp().getRequest();
+  const request: Request = context.switchToHttp().getRequest();
 
   const { name, type: RequestClass } = data;
 

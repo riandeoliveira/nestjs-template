@@ -1,23 +1,21 @@
-import { Inject } from "@nestjs/common";
-import { REQUEST } from "@nestjs/core";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { randomUUID } from "crypto";
-import { CookieOptions } from "express";
+import { CookieOptions, Response } from "express";
 import {
   ACCESS_TOKEN_EXPIRATION_IN_SECONDS,
   REFRESH_TOKEN_EXPIRATION_IN_SECONDS,
 } from "../../../domain/constants";
 import { TokenDto } from "../../../domain/dtos/token.dto";
-import { IRequest } from "../../../domain/interfaces/request.interface";
 import { CurrentUserIdProvider } from "../providers/current-user-id.provider";
+import { HttpResponseProvider } from "../providers/http-response.provider";
 
+@Injectable()
 export class AuthService {
   public constructor(
     private readonly currentUserIdProvider: CurrentUserIdProvider,
+    private readonly httpResponseProvider: HttpResponseProvider,
     private readonly jwtService: JwtService,
-
-    @Inject(REQUEST)
-    private readonly request: IRequest,
   ) {}
 
   private getCookieOptions(expiresIn: number): CookieOptions {
@@ -30,7 +28,7 @@ export class AuthService {
   }
 
   private sendJwtCookiesToClient(accessToken: string, refreshToken: string): void {
-    const { response } = this.request;
+    const response: Response = this.httpResponseProvider.get();
 
     response.cookie(
       "access_token",
@@ -46,7 +44,7 @@ export class AuthService {
   }
 
   public clearJwtCookies(): void {
-    const { response } = this.request;
+    const response: Response = this.httpResponseProvider.get();
 
     response.clearCookie("access_token");
     response.clearCookie("refresh_token");

@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
-import { AddResponseMiddleware } from "../../middlewares/add-response.middleware";
+import { HttpResponseMiddleware } from "../../middlewares/http-response.middleware";
 import { EnvironmentModule } from "../environment/environment.module";
 import { ProvidersModule } from "../providers/providers.module";
 import { AuthService } from "./auth.service";
@@ -19,6 +19,6 @@ import { AuthService } from "./auth.service";
 })
 export class AuthModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AddResponseMiddleware).forRoutes("*");
+    consumer.apply(HttpResponseMiddleware).forRoutes("*");
   }
 }
