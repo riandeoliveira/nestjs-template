@@ -3,6 +3,7 @@ import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses, HttpResponsesKey } from "../../domain/constants/http-responses";
 import { ResponseMessages, ResponseMessagesKey } from "../../domain/enums/response-messages.enum";
 import { ProblemDetailsType } from "../../domain/types/problem-details";
+import { authService } from "../../main.e2e-spec";
 import { CookiesUtility } from "../utilities/cookies.utility";
 
 export class E2EResponseHelper {
@@ -36,5 +37,18 @@ export class E2EResponseHelper {
     expect(body.title).toContain(ResponseMessages[messageType]);
     expect(body.status).toEqual(status);
     expect(body.detail).toEqual(HttpResponses[this.type].message);
+  };
+
+  public expectValidJwtTokens = async (): Promise<void> => {
+    const cookies = this.response.get("Set-Cookie") as string[];
+
+    const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
+    const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
+
+    const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
+    const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
+
+    expect(isAccessTokenValid).toEqual(true);
+    expect(isRefreshTokenValid).toEqual(true);
   };
 }

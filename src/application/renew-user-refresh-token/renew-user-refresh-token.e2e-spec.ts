@@ -3,7 +3,7 @@ import { Response } from "supertest";
 import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
 import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
 import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
-import { authService, prisma, request } from "../../main.e2e-spec";
+import { prisma, request } from "../../main.e2e-spec";
 import { renewUserRefreshTokenFixture } from "./renew-user-refresh-token.fixture";
 
 const { includeRateLimitTest, authenticate } = new E2ETestsHelper(
@@ -27,7 +27,10 @@ describe("Renew User Refresh Token | E2E Tests", () => {
         .post("/user/refresh-token/renew")
         .set("Cookie", jwtCookies[1]);
 
-      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+      const { expectCorrectStatusCode, expectValidJwtTokens } = new E2EResponseHelper(
+        response,
+        "NO_CONTENT",
+      );
 
       const oldPersonalRefreshToken = await prisma.personalRefreshToken.findUnique({
         where: {
@@ -36,20 +39,11 @@ describe("Renew User Refresh Token | E2E Tests", () => {
         },
       });
 
-      const cookies = response.get("Set-Cookie") as string[];
-
-      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
-      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
-
-      const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
-      const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
-
       expectCorrectStatusCode();
 
       expect(oldPersonalRefreshToken?.hasBeenUsed).toEqual(true);
 
-      expect(isAccessTokenValid).toEqual(true);
-      expect(isRefreshTokenValid).toEqual(true);
+      expectValidJwtTokens();
     });
 
     it("should throw an error when the refresh token has already been used", async () => {

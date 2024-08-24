@@ -3,8 +3,7 @@ import { Response } from "supertest";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
 import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
-import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
-import { authService, request } from "../../main.e2e-spec";
+import { request } from "../../main.e2e-spec";
 import { signInUserFixture } from "./sign-in-user.fixture";
 
 const { includeRateLimitTest } = new E2ETestsHelper("POST", "/user/sign-in");
@@ -27,20 +26,13 @@ describe("Sign In User | E2E Tests", () => {
         password,
       });
 
-      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
-
-      const cookies = response.get("Set-Cookie") as string[];
-
-      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
-      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
-
-      const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
-      const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
+      const { expectCorrectStatusCode, expectValidJwtTokens } = new E2EResponseHelper(
+        response,
+        "NO_CONTENT",
+      );
 
       expectCorrectStatusCode();
-
-      expect(isAccessTokenValid).toEqual(true);
-      expect(isRefreshTokenValid).toEqual(true);
+      expectValidJwtTokens();
     });
 
     it("Should throw an error when sending invalid credentials", async () => {
