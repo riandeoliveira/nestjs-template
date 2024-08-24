@@ -1,34 +1,34 @@
 import { User } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
-import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { updateUserFixture } from "./update-user.fixture";
 
-const testsUtility = new TestsUtility({
-  method: "PUT",
-  path: "/user",
-});
+const { includeAuthenticationTest, includeRateLimitTest, authenticate } = new E2ETestsHelper(
+  "PUT",
+  "/user",
+);
 
 describe("Update User | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeAuthenticationTest();
-    testsUtility.includeRateLimitTest();
+    includeAuthenticationTest();
+    includeRateLimitTest();
 
     it("Should update a user", async () => {
-      const { jwtCookies, email, password } = await testsUtility.authenticate();
+      const { jwtCookies, email, password } = await authenticate();
 
       const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
         email: FakeData.email(),
         password: FakeData.strongPassword(),
       });
 
-      const accessToken: string = testsUtility.getAccessTokenFromCookies(jwtCookies);
+      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(jwtCookies, "access_token");
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
@@ -39,7 +39,7 @@ describe("Update User | E2E Tests", () => {
         },
       });
 
-      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
 
       expect(user?.email).not.toEqual(email);
       expect(user?.password).not.toEqual(password);
@@ -54,29 +54,26 @@ describe("Update User | E2E Tests", () => {
       password: FakeData.strongPassword(),
     });
 
-    const { jwtCookies } = await testsUtility.authenticate();
+    const { jwtCookies } = await authenticate();
 
     const response: Response = await request.put("/user").set("Cookie", jwtCookies).send({
       email: firstUserEmail,
     });
 
-    const { status, message } = HttpResponses.CONFLICT;
+    const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+      response,
+      "CONFLICT",
+    );
 
-    const body: ProblemDetailsType = response.body;
-
-    expect(response.statusCode).toEqual(status);
-
-    expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-    expect(body.title).toEqual(ResponseMessages.EMAIL_ALREADY_EXISTS);
-    expect(body.status).toEqual(status);
-    expect(body.detail).toEqual(message);
+    expectCorrectStatusCode();
+    expectProblemDetails("EMAIL_ALREADY_EXISTS");
   });
 
   describe("Validations", () => {
     let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
       cookies = jwtCookies;
     });
@@ -90,16 +87,13 @@ describe("Update User | E2E Tests", () => {
         })
         .retry();
 
-      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "BAD_REQUEST",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toContain(message);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(detail);
+      expectCorrectStatusCode();
+      expectProblemDetails(message);
     });
   });
 });

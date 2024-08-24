@@ -1,22 +1,17 @@
 import each from "jest-each";
 import { Response } from "supertest";
-import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { authService, request } from "../../main.e2e-spec";
 import { signInUserFixture } from "./sign-in-user.fixture";
 
-const testsUtility = new TestsUtility({
-  method: "POST",
-  path: "/user/sign-in",
-});
+const { includeRateLimitTest } = new E2ETestsHelper("POST", "/user/sign-in");
 
 describe("Sign In User | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeRateLimitTest();
+    includeRateLimitTest();
 
     it("Should sign in a user", async () => {
       const email: string = FakeData.email();
@@ -32,15 +27,17 @@ describe("Sign In User | E2E Tests", () => {
         password,
       });
 
+      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+
       const cookies = response.get("Set-Cookie") as string[];
 
-      const accessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
 
       const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
       const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
-      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
 
       expect(isAccessTokenValid).toEqual(true);
       expect(isRefreshTokenValid).toEqual(true);
@@ -52,16 +49,13 @@ describe("Sign In User | E2E Tests", () => {
         password: FakeData.strongPassword(),
       });
 
-      const { status, message } = HttpResponses.UNAUTHORIZED;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "UNAUTHORIZED",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toEqual(ResponseMessages.INVALID_CREDENTIALS);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(message);
+      expectCorrectStatusCode();
+      expectProblemDetails("INVALID_CREDENTIALS");
     });
   });
 
@@ -74,16 +68,13 @@ describe("Sign In User | E2E Tests", () => {
         })
         .retry();
 
-      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "BAD_REQUEST",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toContain(message);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(detail);
+      expectCorrectStatusCode();
+      expectProblemDetails(message);
     });
   });
 });

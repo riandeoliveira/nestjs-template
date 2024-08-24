@@ -4,10 +4,10 @@ import { PersonalRefreshToken } from "../../domain/entities/personal-refresh-tok
 import { User } from "../../domain/entities/user.entity";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { IUseCase } from "../../domain/interfaces/use-case.interface";
-import { PasswordUtility } from "../../domain/utilities/password.utility";
 import { AuthService } from "../../infrastructure/modules/auth/auth.service";
 import { PersonalRefreshTokenRepository } from "../../infrastructure/modules/repositories/personal-refresh-token.repository";
 import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
+import { PasswordUtility } from "../../infrastructure/utilities/password.utility";
 import { SignUpUserRequest } from "./sign-up-user.request";
 
 @Injectable()

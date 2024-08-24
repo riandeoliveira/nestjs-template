@@ -1,23 +1,27 @@
 import { PersonalRefreshToken } from "@prisma/client";
 import { Response } from "supertest";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { prisma, request } from "../../main.e2e-spec";
 
-const testsUtility = new TestsUtility({
-  method: "POST",
-  path: "/user/sign-out",
-});
+const { includeAuthenticationTest, includeRateLimitTest, authenticate } = new E2ETestsHelper(
+  "POST",
+  "/user/sign-out",
+);
 
 describe("Sign Out User | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeAuthenticationTest();
-    testsUtility.includeRateLimitTest();
+    includeAuthenticationTest();
+    includeRateLimitTest();
 
     it("Should sign out a user", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(jwtCookies);
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+        jwtCookies,
+        "refresh_token",
+      );
 
       const personalRefreshTokenBeforeRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({
@@ -28,10 +32,19 @@ describe("Sign Out User | E2E Tests", () => {
 
       const response: Response = await request.post("/user/sign-out").set("Cookie", jwtCookies);
 
+      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+
       const cookies = response.get("Set-Cookie") as string[];
 
-      const emptyAccessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
-      const emptyRefreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
+      const emptyAccessToken: string = CookiesUtility.getJwtTokenFromCookies(
+        cookies,
+        "access_token",
+      );
+
+      const emptyRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+        cookies,
+        "refresh_token",
+      );
 
       const personalRefreshTokenAfterRequest: PersonalRefreshToken | null =
         await prisma.personalRefreshToken.findUnique({
@@ -40,7 +53,7 @@ describe("Sign Out User | E2E Tests", () => {
           },
         });
 
-      expect(response.status).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
 
       expect(personalRefreshTokenBeforeRequest?.hasBeenUsed).toEqual(false);
       expect(personalRefreshTokenAfterRequest?.hasBeenUsed).toEqual(true);

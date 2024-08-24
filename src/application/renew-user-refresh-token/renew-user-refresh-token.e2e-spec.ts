@@ -1,51 +1,69 @@
 import each from "jest-each";
 import { Response } from "supertest";
-import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 import { renewUserRefreshTokenFixture } from "./renew-user-refresh-token.fixture";
 
-const testsUtility = new TestsUtility({
-  method: "POST",
-  path: "/user/refresh-token/renew",
-});
+const { includeRateLimitTest, authenticate } = new E2ETestsHelper(
+  "POST",
+  "/user/refresh-token/renew",
+);
 
 describe("Renew User Refresh Token | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeRateLimitTest();
+    includeRateLimitTest();
 
     it("Should renew a user refresh token", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
+
+      const oldRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+        jwtCookies,
+        "refresh_token",
+      );
 
       const response: Response = await request
         .post("/user/refresh-token/renew")
         .set("Cookie", jwtCookies[1]);
 
+      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+
+      const oldPersonalRefreshToken = await prisma.personalRefreshToken.findUnique({
+        where: {
+          value: oldRefreshToken,
+          deletedAt: null,
+        },
+      });
+
       const cookies = response.get("Set-Cookie") as string[];
 
-      const accessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
 
       const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
       const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
-      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
+
+      expect(oldPersonalRefreshToken?.hasBeenUsed).toEqual(true);
 
       expect(isAccessTokenValid).toEqual(true);
       expect(isRefreshTokenValid).toEqual(true);
     });
 
     it("should throw an error when the refresh token has already been used", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(jwtCookies);
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+        jwtCookies,
+        "refresh_token",
+      );
 
       await prisma.personalRefreshToken.update({
         where: {
           value: refreshToken,
+          deletedAt: null,
         },
         data: {
           hasBeenUsed: true,
@@ -57,16 +75,13 @@ describe("Renew User Refresh Token | E2E Tests", () => {
         .post("/user/refresh-token/renew")
         .set("Cookie", jwtCookies[1]);
 
-      const { status, message } = HttpResponses.UNAUTHORIZED;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "UNAUTHORIZED",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toContain(ResponseMessages.UNAUTHORIZED_OPERATION);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(message);
+      expectCorrectStatusCode();
+      expectProblemDetails("UNAUTHORIZED_OPERATION");
     });
   });
 
@@ -74,7 +89,7 @@ describe("Renew User Refresh Token | E2E Tests", () => {
     let cookie: string;
 
     beforeAll(async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
       cookie = jwtCookies[1];
     });
@@ -90,16 +105,13 @@ describe("Renew User Refresh Token | E2E Tests", () => {
         .set("Cookie", value === "" ? "" : cookieFixture)
         .retry();
 
-      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "BAD_REQUEST",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toContain(message);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(detail);
+      expectCorrectStatusCode();
+      expectProblemDetails(message);
     });
   });
 });

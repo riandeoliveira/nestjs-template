@@ -1,26 +1,24 @@
 import each from "jest-each";
 import { Response } from "supertest";
-import { PROBLEM_DETAILS_URI } from "../../domain/constants";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { ResponseMessages } from "../../domain/enums/response-messages.enum";
-import { ProblemDetailsType } from "../../domain/types/problem-details";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { authService, request } from "../../main.e2e-spec";
 import { resetUserPasswordFixture } from "./reset-user-password.fixture";
 
-const testsUtility = new TestsUtility({
-  method: "POST",
-  path: "/user/reset-password",
-});
+const { includeAuthenticationTest, includeRateLimitTest, authenticate } = new E2ETestsHelper(
+  "POST",
+  "/user/reset-password",
+);
 
 describe("Reset User Password | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeAuthenticationTest();
-    testsUtility.includeRateLimitTest();
+    includeAuthenticationTest();
+    includeRateLimitTest();
 
     it("Should reset the user password", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
       const password: string = FakeData.strongPassword();
 
@@ -32,22 +30,24 @@ describe("Reset User Password | E2E Tests", () => {
           password_confirmation: password,
         });
 
+      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
+
       const cookies = response.get("Set-Cookie") as string[];
 
-      const accessToken: string = testsUtility.getAccessTokenFromCookies(cookies);
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(cookies);
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
 
       const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
       const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
 
-      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
 
       expect(isAccessTokenValid).toEqual(true);
       expect(isRefreshTokenValid).toEqual(true);
     });
 
     it("Should throw an error when passwords are not equivalent", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
       const firstPassword: string = FakeData.strongPassword();
       const secondPassword: string = FakeData.strongPassword();
@@ -60,16 +60,13 @@ describe("Reset User Password | E2E Tests", () => {
           password_confirmation: secondPassword,
         });
 
-      const { status, message } = HttpResponses.BAD_REQUEST;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "BAD_REQUEST",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toEqual(ResponseMessages.PASSWORDS_ARE_EQUIVALENT);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(message);
+      expectCorrectStatusCode();
+      expectProblemDetails("PASSWORDS_ARE_EQUIVALENT");
     });
   });
 
@@ -77,7 +74,7 @@ describe("Reset User Password | E2E Tests", () => {
     let cookies: string[];
 
     beforeAll(async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
       cookies = jwtCookies;
     });
@@ -91,16 +88,13 @@ describe("Reset User Password | E2E Tests", () => {
         })
         .retry();
 
-      const { status, message: detail } = HttpResponses.BAD_REQUEST;
+      const { expectCorrectStatusCode, expectProblemDetails } = new E2EResponseHelper(
+        response,
+        "BAD_REQUEST",
+      );
 
-      const body: ProblemDetailsType = response.body;
-
-      expect(response.statusCode).toEqual(status);
-
-      expect(body.type).toEqual(`${PROBLEM_DETAILS_URI}/${status}`);
-      expect(body.title).toContain(message);
-      expect(body.status).toEqual(status);
-      expect(body.detail).toEqual(detail);
+      expectCorrectStatusCode();
+      expectProblemDetails(message);
     });
   });
 });

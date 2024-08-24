@@ -2,8 +2,8 @@ import { BadRequestException, ConflictException, Injectable } from "@nestjs/comm
 import { User } from "../../domain/entities/user.entity";
 import { ResponseMessages } from "../../domain/enums/response-messages.enum";
 import { IUseCase } from "../../domain/interfaces/use-case.interface";
-import { PasswordUtility } from "../../domain/utilities/password.utility";
 import { UserRepository } from "../../infrastructure/modules/repositories/user.repository";
+import { PasswordUtility } from "../../infrastructure/utilities/password.utility";
 import { UpdateUserRequest } from "./update-user.request";
 
 @Injectable()

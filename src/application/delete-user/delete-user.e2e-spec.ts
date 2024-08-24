@@ -1,28 +1,35 @@
 import { PersonalRefreshToken, User } from "@prisma/client";
 import { Response } from "supertest";
-import { HttpResponses } from "../../domain/constants/http-responses";
-import { TestsUtility } from "../../domain/utilities/tests.utility";
+import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
+import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
 import { authService, prisma, request } from "../../main.e2e-spec";
 
-const testsUtility = new TestsUtility({
-  method: "DELETE",
-  path: "/user",
-});
+const { includeAuthenticationTest, includeRateLimitTest, authenticate } = new E2ETestsHelper(
+  "DELETE",
+  "/user",
+);
 
 describe("Delete User | E2E Tests", () => {
   describe("Use Cases", () => {
-    testsUtility.includeAuthenticationTest();
-    testsUtility.includeRateLimitTest();
+    includeAuthenticationTest();
+    includeRateLimitTest();
 
     it("Should delete the authenticated user", async () => {
-      const { jwtCookies } = await testsUtility.authenticate();
+      const { jwtCookies } = await authenticate();
 
-      const accessToken: string = testsUtility.getAccessTokenFromCookies(jwtCookies);
-      const refreshToken: string = testsUtility.getRefreshTokenFromCookies(jwtCookies);
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(jwtCookies, "access_token");
+
+      const response: Response = await request.delete("/user").set("Cookie", jwtCookies);
+
+      const { expectCorrectStatusCode, expectEmptyJwtCookies } = new E2EResponseHelper(
+        response,
+        "NO_CONTENT",
+      );
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
-      const response: Response = await request.delete("/user").set("Cookie", jwtCookies);
+      const cookies = response.get("Set-Cookie") as string[];
 
       const user: User | null = await prisma.user.findUnique({
         where: {
@@ -34,15 +41,17 @@ describe("Delete User | E2E Tests", () => {
       const personalRefreshTokens: PersonalRefreshToken[] =
         await prisma.personalRefreshToken.findMany({
           where: {
-            value: refreshToken,
+            userId,
             deletedAt: null,
           },
         });
 
-      expect(response.statusCode).toEqual(HttpResponses.NO_CONTENT.status);
+      expectCorrectStatusCode();
 
       expect(user).toEqual(null);
       expect(personalRefreshTokens).toEqual([]);
+
+      expectEmptyJwtCookies(cookies);
     });
   });
 });
