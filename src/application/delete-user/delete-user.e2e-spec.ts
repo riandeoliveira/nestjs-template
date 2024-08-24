@@ -18,14 +18,14 @@ describe("Delete User | E2E Tests", () => {
     it("Should delete the authenticated user", async () => {
       const { jwtCookies } = await authenticate();
 
-      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(jwtCookies, "access_token");
-
       const response: Response = await request.delete("/user").set("Cookie", jwtCookies);
 
       const { expectCorrectStatusCode, expectEmptyJwtCookies } = new E2EResponseHelper(
         response,
         "NO_CONTENT",
       );
+
+      const accessToken: string = CookiesUtility.getJwtTokenFromCookies(jwtCookies, "access_token");
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
