@@ -1,9 +1,11 @@
+import { PersonalRefreshToken } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
 import { FakeData } from "../../infrastructure/abstractions/fake-data.abstraction";
 import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
 import { E2ETestsHelper } from "../../infrastructure/helpers/e2e-tests.helper";
-import { request } from "../../main.e2e-spec";
+import { CookiesUtility } from "../../infrastructure/utilities/cookies.utility";
+import { prisma, request } from "../../main.e2e-spec";
 import { resetUserPasswordFixture } from "./reset-user-password.fixture";
 
 const { includeAuthenticationTest, includeRateLimitTest, authenticate } = new E2ETestsHelper(
@@ -18,6 +20,11 @@ describe("Reset User Password | E2E Tests", () => {
 
     it("Should reset the user password", async () => {
       const { jwtCookies } = await authenticate();
+
+      const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+        jwtCookies,
+        "refresh_token",
+      );
 
       const password: string = FakeData.strongPassword();
 
@@ -34,7 +41,18 @@ describe("Reset User Password | E2E Tests", () => {
         "NO_CONTENT",
       );
 
+      const personalRefreshToken: PersonalRefreshToken | null =
+        await prisma.personalRefreshToken.findUnique({
+          where: {
+            value: refreshToken,
+            deletedAt: null,
+          },
+        });
+
       expectCorrectStatusCode();
+
+      expect(personalRefreshToken?.hasBeenUsed).toEqual(true);
+
       expectValidJwtTokens();
     });
 

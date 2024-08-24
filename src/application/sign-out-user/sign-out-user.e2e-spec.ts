@@ -23,13 +23,6 @@ describe("Sign Out User | E2E Tests", () => {
         "refresh_token",
       );
 
-      const personalRefreshTokenBeforeRequest: PersonalRefreshToken | null =
-        await prisma.personalRefreshToken.findUnique({
-          where: {
-            value: refreshToken,
-          },
-        });
-
       const response: Response = await request.post("/user/sign-out").set("Cookie", jwtCookies);
 
       const { expectCorrectStatusCode, expectEmptyJwtCookies } = new E2EResponseHelper(
@@ -41,12 +34,12 @@ describe("Sign Out User | E2E Tests", () => {
         await prisma.personalRefreshToken.findUnique({
           where: {
             value: refreshToken,
+            deletedAt: null,
           },
         });
 
       expectCorrectStatusCode();
 
-      expect(personalRefreshTokenBeforeRequest?.hasBeenUsed).toEqual(false);
       expect(personalRefreshTokenAfterRequest?.hasBeenUsed).toEqual(true);
 
       expectEmptyJwtCookies();

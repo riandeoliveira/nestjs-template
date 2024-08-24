@@ -1,3 +1,4 @@
+import { PersonalRefreshToken } from "@prisma/client";
 import each from "jest-each";
 import { Response } from "supertest";
 import { E2EResponseHelper } from "../../infrastructure/helpers/e2e-response.helper";
@@ -18,7 +19,7 @@ describe("Renew User Refresh Token | E2E Tests", () => {
     it("Should renew a user refresh token", async () => {
       const { jwtCookies } = await authenticate();
 
-      const oldRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
+      const previousRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
         jwtCookies,
         "refresh_token",
       );
@@ -32,16 +33,17 @@ describe("Renew User Refresh Token | E2E Tests", () => {
         "NO_CONTENT",
       );
 
-      const oldPersonalRefreshToken = await prisma.personalRefreshToken.findUnique({
-        where: {
-          value: oldRefreshToken,
-          deletedAt: null,
-        },
-      });
+      const previousPersonalRefreshToken: PersonalRefreshToken | null =
+        await prisma.personalRefreshToken.findUnique({
+          where: {
+            value: previousRefreshToken,
+            deletedAt: null,
+          },
+        });
 
       expectCorrectStatusCode();
 
-      expect(oldPersonalRefreshToken?.hasBeenUsed).toEqual(true);
+      expect(previousPersonalRefreshToken?.hasBeenUsed).toEqual(true);
 
       expectValidJwtTokens();
     });

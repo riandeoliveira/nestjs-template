@@ -1,3 +1,4 @@
+import { isUUID } from "class-validator";
 import { Response } from "supertest";
 import { PROBLEM_DETAILS_URI } from "../../domain/constants";
 import { HttpResponses, HttpResponsesKey } from "../../domain/constants/http-responses";
@@ -47,10 +48,15 @@ export class E2EResponseHelper {
     const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
     const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
 
-    const isAccessTokenValid: boolean = !!(await authService.validateTokenOrThrow(accessToken));
-    const isRefreshTokenValid: boolean = !!(await authService.validateTokenOrThrow(refreshToken));
+    const validatedAccessToken = await authService.validateTokenOrThrow(accessToken);
+    const validatedRefreshToken = await authService.validateTokenOrThrow(refreshToken);
 
-    expect(isAccessTokenValid).toEqual(true);
-    expect(isRefreshTokenValid).toEqual(true);
+    expect(!!validatedAccessToken).toEqual(true);
+    expect(!!validatedRefreshToken).toEqual(true);
+
+    expect(isUUID(validatedAccessToken.userId)).toEqual(true);
+    expect(isUUID(validatedRefreshToken.userId)).toEqual(true);
+
+    expect(validatedAccessToken.userId).toEqual(validatedRefreshToken.userId);
   };
 }
