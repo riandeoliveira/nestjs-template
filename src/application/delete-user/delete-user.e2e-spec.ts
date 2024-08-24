@@ -29,8 +29,6 @@ describe("Delete User | E2E Tests", () => {
 
       const { userId } = await authService.validateTokenOrThrow(accessToken);
 
-      const cookies = response.get("Set-Cookie") as string[];
-
       const user: User | null = await prisma.user.findUnique({
         where: {
           id: userId,
@@ -51,7 +49,7 @@ describe("Delete User | E2E Tests", () => {
       expect(user).toEqual(null);
       expect(personalRefreshTokens).toEqual([]);
 
-      expectEmptyJwtCookies(cookies);
+      expectEmptyJwtCookies();
     });
   });
 });

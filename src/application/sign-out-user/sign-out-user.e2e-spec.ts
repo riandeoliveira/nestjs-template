@@ -32,18 +32,9 @@ describe("Sign Out User | E2E Tests", () => {
 
       const response: Response = await request.post("/user/sign-out").set("Cookie", jwtCookies);
 
-      const { expectCorrectStatusCode } = new E2EResponseHelper(response, "NO_CONTENT");
-
-      const cookies = response.get("Set-Cookie") as string[];
-
-      const emptyAccessToken: string = CookiesUtility.getJwtTokenFromCookies(
-        cookies,
-        "access_token",
-      );
-
-      const emptyRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
-        cookies,
-        "refresh_token",
+      const { expectCorrectStatusCode, expectEmptyJwtCookies } = new E2EResponseHelper(
+        response,
+        "NO_CONTENT",
       );
 
       const personalRefreshTokenAfterRequest: PersonalRefreshToken | null =
@@ -58,8 +49,7 @@ describe("Sign Out User | E2E Tests", () => {
       expect(personalRefreshTokenBeforeRequest?.hasBeenUsed).toEqual(false);
       expect(personalRefreshTokenAfterRequest?.hasBeenUsed).toEqual(true);
 
-      expect(emptyAccessToken).toEqual("");
-      expect(emptyRefreshToken).toEqual("");
+      expectEmptyJwtCookies();
     });
   });
 });

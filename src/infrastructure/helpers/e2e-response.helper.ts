@@ -16,7 +16,9 @@ export class E2EResponseHelper {
     expect(this.response.statusCode).toEqual(HttpResponses[this.type].status);
   };
 
-  public expectEmptyJwtCookies = (cookies: string[]): void => {
+  public expectEmptyJwtCookies = (): void => {
+    const cookies: string[] = this.response.get("Set-Cookie");
+
     const emptyAccessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
 
     const emptyRefreshToken: string = CookiesUtility.getJwtTokenFromCookies(
@@ -40,7 +42,7 @@ export class E2EResponseHelper {
   };
 
   public expectValidJwtTokens = async (): Promise<void> => {
-    const cookies = this.response.get("Set-Cookie") as string[];
+    const cookies: string[] = this.response.get("Set-Cookie");
 
     const accessToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "access_token");
     const refreshToken: string = CookiesUtility.getJwtTokenFromCookies(cookies, "refresh_token");
